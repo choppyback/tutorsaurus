@@ -2,9 +2,13 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-const port = process.env.PORT || 3000;
+//middleware
+
 app.use(cors());
+app.use(express.json());
 
-app.get('/', (req, res) => res.send(`Hello World!`));
+//routes
 
-app.listen(port, () => console.log(`Express app listening on ${port}`))
+app.listen(2000, () => {
+  console.log(`Server is listening on port 2000`);
+});
