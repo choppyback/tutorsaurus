@@ -35,6 +35,9 @@ const Login = () => {
       onSubmit={handleSubmit}
       style={{ maxWidth: "400px", margin: "auto", paddingTop: "40px" }}
     >
+      <button type="button" onClick={() => navigate("/")}>
+        ⬅ Back
+      </button>
       <h2>Login</h2>
 
       <input

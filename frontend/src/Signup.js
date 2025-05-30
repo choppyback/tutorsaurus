@@ -55,7 +55,13 @@ const Signup = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ margin: "auto", paddingLeft: "10px", paddingTop: "40px" }}
+    >
+      <button type="button" onClick={() => navigate("/")}>
+        ⬅ Back
+      </button>
       <h2>Signup</h2>
       <input
         type="text"
