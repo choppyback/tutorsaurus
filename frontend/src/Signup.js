@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const faculties = [
   "Arts and Social Sciences",
@@ -16,6 +18,8 @@ const faculties = [
 ];
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -42,7 +46,9 @@ const Signup = () => {
         "http://localhost:2000/auth/signup",
         dataToSend
       );
-      alert("Signup successful. Token: " + res.data.token);
+      alert("Signup successful. Token: " + res.data.jwtToken);
+      localStorage.setItem("token", res.data.jwtToken);
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data || "Signup failed");
     }
@@ -99,6 +105,9 @@ const Signup = () => {
       </select>
 
       <button type="submit">Sign Up</button>
+      <p style={{ marginTop: "10px" }}>
+        Already have an account? <Link to="/login">Log in</Link>
+      </p>
     </form>
   );
 };
