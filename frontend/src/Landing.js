@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Landing = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "50px" }}>
-      <h1>Welcome to Tutorsaurus 🦕</h1>
+      <img src="/logo.png" alt="Tutorsaurus Logo" style={{ width: "200px" }} />
       <p>Your trusted peer tutoring platform at NUS</p>
       <div>
         <Link to="/signup">
