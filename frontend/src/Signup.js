@@ -43,7 +43,7 @@ const Signup = () => {
       const dataToSend = { ...formData };
 
       const res = await axios.post(
-        "http://tutorsaurus.onrender.com/auth/signup",
+        "https://tutorsaurus.onrender.com/auth/signup",
         dataToSend
       );
       alert("Signup successful. Token: " + res.data.jwtToken);

@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://tutorsaurus.onrender.com/auth/login",
+        "https://tutorsaurus.onrender.com/auth/login",
         inputs
       );
       alert("Login successful! Token: " + res.data.jwtToken);
