@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const PORT = process.env.PORT || 2000;
 
 //middleware
 
@@ -13,6 +14,6 @@ app.use("/dashboard", require("./routes/dashboard"));
 
 app.use("/auth", require("./routes/auth"));
 
-app.listen(2000, () => {
-  console.log(`Server is listening on port 2000`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
