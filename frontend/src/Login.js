@@ -21,7 +21,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:2000/auth/login", inputs);
+      const res = await axios.post(
+        "http://tutorsaurus.onrender.com/auth/login",
+        inputs
+      );
       alert("Login successful! Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/dashboard");
