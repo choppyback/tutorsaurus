@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "./api";
 
 const faculties = [
   "Arts and Social Sciences",
@@ -42,10 +43,7 @@ const Signup = () => {
     try {
       const dataToSend = { ...formData };
 
-      const res = await axios.post(
-        "https://tutorsaurus.onrender.com/auth/signup",
-        dataToSend
-      );
+      const res = await axios.post("${BASE_URL}/auth/signup", dataToSend);
       alert("Signup successful. Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/dashboard");
