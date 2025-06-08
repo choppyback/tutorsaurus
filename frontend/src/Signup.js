@@ -43,7 +43,7 @@ const Signup = () => {
     try {
       const dataToSend = { ...formData };
 
-      const res = await axios.post("${BASE_URL}/auth/signup", dataToSend);
+      const res = await axios.post(`${BASE_URL}/auth/signup`, dataToSend);
       alert("Signup successful. Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/dashboard");

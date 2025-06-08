@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("${BASE_URL}/auth/login", inputs);
+      const res = await axios.post(`${BASE_URL}/auth/login`, inputs);
       alert("Login successful! Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/dashboard");
