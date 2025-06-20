@@ -4,10 +4,26 @@ const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utils/jwtGenerator");
 const validInfo = require("../middleware/validInfo");
 const authorize = require("../middleware/authorize");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// Ensure uploads folder exists
+const dir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+
+// Configure Multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, dir),
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "_" + file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 // Register route
 
-router.post("/signup", validInfo, async (req, res) => {
+router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   try {
     // 1. destructure the req.body (name, body, email)
     const { name, email, password, role, faculty, gender, year_of_study } =
@@ -22,6 +38,15 @@ router.post("/signup", validInfo, async (req, res) => {
       return res.status(401).json("User already exist!");
     }
 
+    // For tutors ensure there is profile picture
+    if (role === "tutor" && !req.file) {
+      return res
+        .status(400)
+        .json({ error: "Profile picture is required for tutors." });
+    }
+
+    const profilePicPath = req.file ? `/uploads/${req.file.filename}` : null;
+
     // 3. Bcrypt the user password
     const saltRound = 10;
     const salt = await bcrypt.genSalt(saltRound);
@@ -30,9 +55,18 @@ router.post("/signup", validInfo, async (req, res) => {
 
     // 4. enter the new user inside our database
     const newUser = await pool.query(
-      `INSERT INTO users (name, email, password, role, faculty, gender, year_of_study)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [name, email, bcryptPassword, role, faculty, gender, year_of_study]
+      `INSERT INTO users (name, email, password, role, faculty, gender, year_of_study, profile_pic)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [
+        name,
+        email,
+        bcryptPassword,
+        role,
+        faculty,
+        gender,
+        year_of_study,
+        profilePicPath,
+      ]
     );
 
     // 5. generating our jwt token
