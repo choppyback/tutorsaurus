@@ -33,6 +33,8 @@ const Signup = () => {
 
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
+  const [modulesTaught, setModulesTaught] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -61,6 +63,10 @@ const Signup = () => {
       }
       if (profilePic) {
         data.append("profile_pic", profilePic); // important field name
+      }
+      if (formData.role === "tutor") {
+        data.append("modules_taught", modulesTaught);
+        data.append("hourly_rate", hourlyRate);
       }
 
       const res = await axios.post(`${BASE_URL}/auth/signup`, data, {
@@ -134,13 +140,29 @@ const Signup = () => {
         ))}
       </select>
       {formData.role === "tutor" && (
-        <input
-          type="file"
-          accept="image/*"
-          name="profile_pic"
-          onChange={handleFileChange}
-          required
-        />
+        <>
+          <input
+            type="text"
+            placeholder="Modules Taught (e.g. CS2030S,CS2040S)"
+            value={modulesTaught}
+            onChange={(e) => setModulesTaught(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Hourly Rate (e.g. 30)"
+            value={hourlyRate}
+            onChange={(e) => setHourlyRate(e.target.value)}
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            name="profile_pic"
+            onChange={handleFileChange}
+            required
+          />
+        </>
       )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
