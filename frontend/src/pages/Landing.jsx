@@ -5,7 +5,7 @@ import styles from "../styles/landing";
 const LandingPage = () => {
   return (
     <Box sx={styles.page}>
-      {/* Top Logo + Brand Name (left-aligned) */}
+      {/* Brand Header */}
       <Box sx={styles.brandHeader}>
         <Box sx={styles.brandContent}>
           <Box
@@ -20,7 +20,7 @@ const LandingPage = () => {
         </Box>
       </Box>
 
-      {/* Hero Section */}
+      {/* Logo Section */}
       <Container maxWidth="md" sx={styles.heroContainer}>
         <Box
           component="img"
