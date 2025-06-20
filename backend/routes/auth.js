@@ -26,8 +26,17 @@ const upload = multer({ storage });
 router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   try {
     // 1. destructure the req.body (name, body, email)
-    const { name, email, password, role, faculty, gender, year_of_study } =
-      req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      faculty,
+      gender,
+      year_of_study,
+      modules_taught,
+      hourly_rate,
+    } = req.body;
 
     // 2. check if user exist (if exist then throw error)
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -54,20 +63,32 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     const bcryptPassword = await bcrypt.hash(password, salt);
 
     // 4. enter the new user inside our database
-    const newUser = await pool.query(
-      `INSERT INTO users (name, email, password, role, faculty, gender, year_of_study, profile_pic)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [
-        name,
-        email,
-        bcryptPassword,
-        role,
-        faculty,
-        gender,
-        year_of_study,
-        profilePicPath,
-      ]
-    );
+    let insertQuery = `
+  INSERT INTO users (name, email, password, role, faculty, gender, year_of_study, profile_pic
+`;
+
+    let values = [
+      name,
+      email,
+      bcryptPassword,
+      role,
+      faculty,
+      gender,
+      year_of_study,
+      profilePicPath,
+    ];
+
+    if (role === "tutor") {
+      insertQuery += `, modules_taught, hourly_rate`;
+      values.push(modules_taught.split(",").map((mod) => mod.trim()));
+      values.push(Number(hourly_rate));
+    }
+
+    insertQuery += `) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(", ")}) RETURNING *`;
+
+    const newUser = await pool.query(insertQuery, values);
 
     // 5. generating our jwt token
     const jwtToken = jwtGenerator(newUser.rows[0].user_id);
