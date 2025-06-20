@@ -9,5 +9,7 @@ CREATE TABLE users (
     faculty TEXT,
     gender TEXT,
     year_of_study INTEGER,
-    profile_pic TEXT
+    profile_pic TEXT,
+    modules_taught TEXT[],
+    hourly_rate NUMERIC(6,2)
 );
