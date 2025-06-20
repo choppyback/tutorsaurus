@@ -31,6 +31,9 @@ const Signup = () => {
     year_of_study: "",
   });
 
+  const [profilePic, setProfilePic] = useState(null);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -38,17 +41,40 @@ const Signup = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    setProfilePic(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const dataToSend = { ...formData };
+    setError("");
 
-      const res = await axios.post(`${BASE_URL}/auth/signup`, dataToSend);
+    if (formData.role === "tutor" && !profilePic) {
+      setError("Profile picture is required for tutors.");
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      for (const key in formData) {
+        data.append(key, formData[key]);
+      }
+      if (profilePic) {
+        data.append("profile_pic", profilePic); // important field name
+      }
+
+      const res = await axios.post(`${BASE_URL}/auth/signup`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Signup successful. Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/dashboard");
     } catch (err) {
-      alert(err.response?.data || "Signup failed");
+      console.error("Signup error:", err.response || err.message);
+      const msg = err.response?.data?.error || "Signup failed.";
+      alert(`Signup failed: ${msg}`);
     }
   };
 
@@ -107,6 +133,17 @@ const Signup = () => {
           <option key={year} value={year}>{`Year ${year}`}</option>
         ))}
       </select>
+      {formData.role === "tutor" && (
+        <input
+          type="file"
+          accept="image/*"
+          name="profile_pic"
+          onChange={handleFileChange}
+          required
+        />
+      )}
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <button type="submit">Sign Up</button>
       <p style={{ marginTop: "10px" }}>
