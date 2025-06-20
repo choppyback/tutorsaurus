@@ -8,5 +8,6 @@ CREATE TABLE users (
     role TEXT NOT NULL CHECK (role IN ('student', 'tutor', 'admin')),
     faculty TEXT,
     gender TEXT,
-    year_of_study INTEGER
+    year_of_study INTEGER,
+    profile_pic TEXT
 );
