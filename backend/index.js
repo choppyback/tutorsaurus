@@ -16,6 +16,8 @@ app.use("/dashboard", require("./routes/dashboard"));
 
 app.use("/auth", require("./routes/auth"));
 
+app.use("/api/search", require("./routes/search"));
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
