@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "../components/SearchBar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ const Dashboard = () => {
   }, [navigate]);
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "50px" }}>
-      <h2>Dashboard</h2>
-      <p>{userMessage}</p>
+    <div>
+      <h2>Welcome to your Dashboard</h2>
+      <SearchBar />
     </div>
   );
 };
