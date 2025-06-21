@@ -160,6 +160,7 @@ const Signup = () => {
             <InputLabel>Gender</InputLabel>
             <Select
               label="Gender"
+              name="gender" // need to be same name as formData
               value={formData.gender}
               onChange={handleChange}
               required
@@ -173,6 +174,7 @@ const Signup = () => {
             <InputLabel>Year of Study</InputLabel>
             <Select
               label="Year of Study"
+              name="year_of_study"
               value={formData.year_of_study}
               onChange={handleChange}
               required
