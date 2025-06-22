@@ -6,7 +6,13 @@ const NavBar = () => {
   return (
     <AppBar
       position="static"
-      sx={{ backgroundColor: "#fff", boxShadow: "none", px: 3 }}
+      sx={{
+        backgroundColor: "#fff",
+        boxShadow: "none",
+        px: 3,
+        minHeight: 90,
+        justifyContent: "center",
+      }}
     >
       <Toolbar
         sx={{
@@ -34,7 +40,7 @@ const NavBar = () => {
         <Box sx={{ display: "flex", gap: 2 }}>
           <Button
             component={Link}
-            to="/profile"
+            to="/editprofile"
             sx={{ color: "#294A29", textTransform: "none", fontWeight: "bold" }}
           >
             Profile
