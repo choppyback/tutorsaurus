@@ -2,7 +2,7 @@ const styles = {
   page: {
     backgroundColor: "#FAF6EE",
     minHeight: "100vh",
-    py: 4,
+    py: 0,
   },
   brandHeader: {
     px: 5,
@@ -31,6 +31,16 @@ const styles = {
     "&:hover": {
       backgroundColor: "#f0f5e9",
     },
+  },
+  sidebar: {
+    width: 280,
+    backgroundColor: "#fff",
+    borderRadius: 2,
+    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+    px: 3,
+    pt: 3,
+    pb: 3,
+    height: "fit-content",
   },
 };
 
