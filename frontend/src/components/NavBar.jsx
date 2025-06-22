@@ -8,7 +8,12 @@ const NavBar = () => {
       position="static"
       sx={{ backgroundColor: "#fff", boxShadow: "none", px: 3 }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         {/* Left: Logo + Brand Name */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Box
