@@ -69,16 +69,32 @@ function SearchBar() {
                 boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >
-              <Typography fontWeight="bold">{tutor.name}</Typography>
-              <Typography fontSize="0.875rem" color="text.secondary">
-                Module: {tutor.modules_taught?.join(", ")}
-              </Typography>
-              <Typography fontSize="0.875rem" color="text.secondary">
-                Faculty: {tutor.faculty}
-              </Typography>
-              <Typography fontSize="0.875rem" color="text.secondary">
-                Hourly Rate: {tutor.hourly_rate}
-              </Typography>
+              {/* Profile Image */}
+              <Box
+                component="img"
+                src={BASE_URL + tutor.profile_pic} // Make sure profile_pic starts with /uploads/...
+                alt={tutor.name}
+                sx={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: 2,
+                  objectFit: "cover",
+                }}
+              />
+
+              {/* Tutor Detail */}
+              <Box sx={{ mt: 4 }}>
+                <Typography fontWeight="bold">{tutor.name}</Typography>
+                <Typography fontSize="0.875rem" color="text.secondary">
+                  Module: {tutor.all_modules}
+                </Typography>
+                <Typography fontSize="0.875rem" color="text.secondary">
+                  Faculty: {tutor.faculty}
+                </Typography>
+                <Typography fontSize="0.875rem" color="text.secondary">
+                  Hourly Rate: {tutor.hourly_rate}
+                </Typography>
+              </Box>
             </Box>
           ))}
         </Box>
