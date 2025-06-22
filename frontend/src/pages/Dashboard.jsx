@@ -1,5 +1,5 @@
 import React from "react";
-import TopBar from "../components/NavBar";
+import NavBar from "../components/NavBar";
 import SearchBar from "../components/SearchBar";
 
 const Dashboard = () => {
@@ -9,7 +9,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <TopBar />
+      <NavBar />
       <SearchBar onSearch={handleSearch} />
     </>
   );
