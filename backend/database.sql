@@ -17,6 +17,7 @@ CREATE TABLE users (
 CREATE TABLE tutors (
   tutor_id INTEGER PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
   bio TEXT
+  availability TEXT
 );
 
 -- MODULES TABLE (list of module codes)
