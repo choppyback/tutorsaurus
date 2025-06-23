@@ -78,14 +78,6 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
       ]
     );
 
-    /*
-    if (role === "tutor") {
-      insertQuery += `, modules_taught, hourly_rate`;
-      values.push(modules_taught.split(",").map((mod) => mod.trim()));
-      values.push(Number(hourly_rate));
-    }
-      */
-
     const userId = newUser.rows[0].user_id;
 
     // If tutor, insert into tutors table
