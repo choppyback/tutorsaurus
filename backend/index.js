@@ -18,6 +18,8 @@ app.use("/auth", require("./routes/auth"));
 
 app.use("/api/search", require("./routes/search"));
 
+app.use("/api/profile", require("./routes/profile"));
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
