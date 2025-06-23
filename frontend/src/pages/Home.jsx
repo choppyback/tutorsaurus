@@ -5,9 +5,9 @@ import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 import BASE_URL from "../api";
 import { Box, Typography } from "@mui/material";
-import styles from "../styles/dashboard";
+import styles from "../styles/home";
 
-const Dashboard = () => {
+const Home = () => {
   const [tutors, setTutors] = useState([]);
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [filters, setFilters] = useState({
@@ -116,4 +116,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Home;
