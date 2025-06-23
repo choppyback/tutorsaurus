@@ -1,8 +1,19 @@
 import React from "react";
 import { AppBar, Toolbar, Box, Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
+  const location = useLocation();
+
+  const isOnProfilePage = location.pathname === "/editprofile";
+
   return (
     <AppBar
       position="static"
@@ -36,18 +47,35 @@ const NavBar = () => {
           </Typography>
         </Box>
 
-        {/* Right: Profile + Logout */}
+        {/* Right: Conditional Navigation Buttons */}
         <Box sx={{ display: "flex", gap: 2 }}>
+          {isOnProfilePage ? (
+            <Button
+              component={Link}
+              to="/home"
+              sx={{
+                color: "#294A29",
+                textTransform: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Home
+            </Button>
+          ) : (
+            <Button
+              component={Link}
+              to="/editprofile"
+              sx={{
+                color: "#294A29",
+                textTransform: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Profile
+            </Button>
+          )}
           <Button
-            component={Link}
-            to="/editprofile"
-            sx={{ color: "#294A29", textTransform: "none", fontWeight: "bold" }}
-          >
-            Profile
-          </Button>
-          <Button
-            component={Link}
-            to="/login"
+            onClick={handleLogout}
             variant="outlined"
             sx={{
               borderColor: "#A2CB75",
