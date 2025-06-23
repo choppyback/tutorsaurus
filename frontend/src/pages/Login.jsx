@@ -22,7 +22,7 @@ const Login = () => {
       const res = await axios.post(`${BASE_URL}/auth/login`, inputs);
       alert("Login successful! Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       alert(err.response?.data || "Login failed");
     }
