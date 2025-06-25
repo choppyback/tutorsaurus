@@ -5,7 +5,7 @@ CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
+  password TEXT NOT NULL,
   gender TEXT,
   year_of_study INTEGER,
   faculty TEXT,
@@ -15,8 +15,8 @@ CREATE TABLE users (
 
 -- TUTORS TABLE (only for tutor-specific fields)
 CREATE TABLE tutors (
-  tutor_id INTEGER PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
-  bio TEXT
+  user_id INTEGER PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+  bio TEXT,
   availability TEXT
 );
 
@@ -28,16 +28,16 @@ CREATE TABLE modules (
 
 -- TUTOR_MODULES TABLE (many-to-many tutor-module relationships with hourly rate)
 CREATE TABLE tutor_modules (
-  tutor_id INTEGER REFERENCES tutors(tutor_id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
   module_id INTEGER REFERENCES modules(module_id) ON DELETE CASCADE,
   hourly_rate NUMERIC(6,2) NOT NULL,
-  PRIMARY KEY (tutor_id, module_id)
+  PRIMARY KEY (user_id, module_id)
 );
 
 -- RATINGS TABLE
 CREATE TABLE ratings (
   rating_id SERIAL PRIMARY KEY,
-  tutor_id INTEGER REFERENCES tutors(tutor_id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
   rater_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
   score INTEGER CHECK (score >= 1 AND score <= 5),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -46,7 +46,7 @@ CREATE TABLE ratings (
 -- REVIEWS TABLE
 CREATE TABLE reviews (
   review_id SERIAL PRIMARY KEY,
-  tutor_id INTEGER REFERENCES tutors(tutor_id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
   reviewer_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
   review TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
