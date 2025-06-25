@@ -33,6 +33,9 @@ const FilterPanel = ({ filters, setFilters, onApply }) => {
           label="Faculty"
           onChange={(e) => setFilters({ ...filters, faculty: e.target.value })}
         >
+          <MenuItem value="">
+            <em>All</em>
+          </MenuItem>
           {faculties.map((f, idx) => (
             <MenuItem key={idx} value={f}>
               {f}
