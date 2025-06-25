@@ -11,9 +11,9 @@ const Home = () => {
   const [tutors, setTutors] = useState([]);
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [filters, setFilters] = useState({
+    faculty: "",
     maxPrice: "",
     rating: "",
-    availability: "",
   });
 
   const handleSearch = async (query) => {
@@ -28,19 +28,15 @@ const Home = () => {
 
   const applyFilters = () => {
     const filtered = tutors.filter((tutor) => {
+      const passFaculty =
+        !filters.faculty ||
+        tutor.faculty?.toLowerCase() === filters.faculty.toLowerCase();
       const passPrice =
         !filters.maxPrice || tutor.hourly_rate <= parseFloat(filters.maxPrice);
-
       const passRating =
         !filters.rating || tutor.rating >= parseFloat(filters.rating);
 
-      const passAvailability =
-        !filters.availability ||
-        tutor.availability
-          ?.toLowerCase()
-          .includes(filters.availability.toLowerCase());
-
-      return passPrice && passRating && passAvailability;
+      return passFaculty && passPrice && passRating;
     });
 
     setFilteredTutors(filtered);
