@@ -100,6 +100,7 @@ router.get("/:id", async (req, res) => {
   try {
     const user_id = req.params.id;
 
+    // 1. Get general user info, ensuring they are a tutor
     const userResult = await pool.query(
       "SELECT * FROM users WHERE user_id = $1 AND role = 'tutor'",
       [user_id]
@@ -111,8 +112,9 @@ router.get("/:id", async (req, res) => {
 
     const user = userResult.rows[0];
 
+    // 2. Get tutor-specific fields
     const tutorRes = await pool.query(
-      "SELECT bio, availability FROM tutors WHERE user_id = $1",
+      "SELECT bio FROM tutors WHERE user_id = $1",
       [user_id]
     );
 
@@ -127,10 +129,38 @@ router.get("/:id", async (req, res) => {
     const modules = moduleRes.rows.map((r) => r.code).join(", ");
     const hourly_rate = moduleRes.rows[0]?.hourly_rate || null;
 
+    // 3. Get availability from availability table
+    const availabilityRes = await pool.query(
+      `SELECT day, start_time, end_time
+       FROM availability
+       WHERE user_id = $1
+       ORDER BY 
+         CASE day
+           WHEN 'Mon' THEN 1
+           WHEN 'Tue' THEN 2
+           WHEN 'Wed' THEN 3
+           WHEN 'Thu' THEN 4
+           WHEN 'Fri' THEN 5
+           WHEN 'Sat' THEN 6
+           WHEN 'Sun' THEN 7
+         END, start_time`,
+      [user_id]
+    );
+
+    const availability = {};
+    for (const row of availabilityRes.rows) {
+      if (!availability[row.day]) availability[row.day] = {};
+      availability[row.day] = {
+        enabled: true,
+        start: row.start_time,
+        end: row.end_time,
+      };
+    }
+
     user.bio = tutorRes.rows[0]?.bio || "";
-    user.availability = tutorRes.rows[0]?.availability || "";
     user.modules_taught = modules;
     user.hourly_rate = hourly_rate;
+    user.availability = availability;
 
     res.json(user);
   } catch (err) {
