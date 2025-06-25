@@ -22,10 +22,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Register route
-
 router.post("/signup", upload.single("profile_pic"), async (req, res) => {
   try {
-    // 1. destructure the req.body (name, body, email)
     const {
       name,
       email,
@@ -36,18 +34,16 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
       year_of_study,
       modules_taught,
       hourly_rate,
+      availability,
     } = req.body;
 
-    // 2. check if user exist (if exist then throw error)
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
-
     if (user.rows.length > 0) {
-      return res.status(401).json("User already exist!");
+      return res.status(401).json("User already exists!");
     }
 
-    // For tutors ensure there is profile picture
     if (role === "tutor" && !req.file) {
       return res
         .status(400)
@@ -56,13 +52,9 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
 
     const profilePicPath = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // 3. Bcrypt the user password
-    const saltRound = 10;
-    const salt = await bcrypt.genSalt(saltRound);
-
+    const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
-    // 4. enter the new user inside our database
     const newUser = await pool.query(
       `INSERT INTO users (name, email, password, role, faculty, gender, year_of_study, profile_pic)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
@@ -80,16 +72,15 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
 
     const userId = newUser.rows[0].user_id;
 
-    // If tutor, insert into tutors table
     if (role === "tutor") {
       // Insert into tutors table
-      await pool.query(
-        `INSERT INTO tutors (user_id, bio) VALUES ($1, $2)`,
-        [userId, ""] // empty bio for now
-      );
+      await pool.query(`INSERT INTO tutors (user_id, bio) VALUES ($1, $2)`, [
+        userId,
+        "",
+      ]);
 
+      // Insert tutor modules
       const moduleList = modules_taught.split(",").map((m) => m.trim());
-
       for (const code of moduleList) {
         const result = await pool.query(
           `SELECT module_id FROM modules WHERE code = $1`,
@@ -97,25 +88,36 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-          console.warn(`Module code not found: ${code}`);
+          console.warn(`Module not found: ${code}`);
           continue;
         }
 
         const moduleId = result.rows[0].module_id;
-
         await pool.query(
-          `INSERT INTO tutor_modules (user_id, module_id, hourly_rate) VALUES ($1, $2, $3)`,
+          `INSERT INTO tutor_modules (user_id, module_id, hourly_rate)
+           VALUES ($1, $2, $3)`,
           [userId, moduleId, Number(hourly_rate)]
         );
       }
+
+      // Insert tutor availability
+      const parsedAvailability = availability ? JSON.parse(availability) : {};
+      for (const [day, slot] of Object.entries(parsedAvailability)) {
+        const { enabled, start, end } = slot;
+        if (enabled && start && end) {
+          await pool.query(
+            `INSERT INTO availability (user_id, day, start_time, end_time)
+             VALUES ($1, $2, $3, $4)`,
+            [userId, day, start, end]
+          );
+        }
+      }
     }
 
-    // 5. generating our jwt token
-    const jwtToken = jwtGenerator(newUser.rows[0].user_id);
-
+    const jwtToken = jwtGenerator(userId);
     res.json({ jwtToken });
   } catch (err) {
-    console.error(err.message);
+    console.error("Signup error:", err.message);
     res.status(500).send("Server error");
   }
 });
