@@ -16,8 +16,7 @@ CREATE TABLE users (
 -- TUTORS TABLE (only for tutor-specific fields)
 CREATE TABLE tutors (
   user_id INTEGER PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
-  bio TEXT,
-  availability TEXT
+  bio TEXT
 );
 
 -- MODULES TABLE (list of module codes)
@@ -50,4 +49,13 @@ CREATE TABLE reviews (
   reviewer_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
   review TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- AVAILABILITY TABLE
+CREATE TABLE availability (
+  user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
+  day TEXT CHECK (day IN ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')),
+  start_time TIME,
+  end_time TIME,
+  PRIMARY KEY (user_id, day, start_time)
 );
