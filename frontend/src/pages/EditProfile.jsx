@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
   TextField,
-  CircularProgress,
   Avatar,
   Grid,
   Paper,
@@ -106,10 +105,13 @@ function EditProfile() {
   };
 
   if (!userData) {
+    // Show loading state while user data is being fetched from backend
     return (
-      <Box sx={styles.container}>
-        <Typography variant="h5">Edit Profile Page</Typography>
-        <CircularProgress sx={{ mt: 2 }} />
+      <Box sx={styles.page}>
+        <NavBar />
+        <Box sx={styles.container}>
+          <Typography variant="h5">Loading....</Typography>
+        </Box>
       </Box>
     );
   }
@@ -139,7 +141,7 @@ function EditProfile() {
           Edit Profile
         </Typography>
 
-        <Paper elevation={2} sx={styles.paper}>
+        <Paper elevation={24} sx={styles.paper}>
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
               <Box sx={{ maxWidth: 730, width: "100%" }}>
