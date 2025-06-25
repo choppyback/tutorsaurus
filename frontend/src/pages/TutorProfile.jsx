@@ -23,26 +23,51 @@ function TutorProfile({ id: propId }) {
 
   return (
     <div className="tutor-profile">
-      <img src={BASE_URL + tutor.profile_pic} style={{ width: "150px" }} />
+      {tutor.profile_pic && (
+        <img
+          src={`${BASE_URL}${tutor.profile_pic}`}
+          alt="Tutor"
+          style={{ width: "150px", borderRadius: "8px" }}
+        />
+      )}
       <h2>{tutor.name}</h2>
+      <p>
+        <strong>Email:</strong> {tutor.email}
+      </p>
       <p>
         <strong>Faculty:</strong> {tutor.faculty}
       </p>
       <p>
-        <strong>Year of Studies:</strong> {tutor.year}
+        <strong>Year of Study:</strong> {tutor.year_of_study}
       </p>
       <p>
-        <strong>Modules Taught:</strong> {tutor.modules_taught}
+        <strong>Modules Taught:</strong>{" "}
+        {tutor.modules_taught || "Not specified"}
       </p>
       <p>
-        <strong>Hourly Rate:</strong> ${tutor.hourly_rate}
+        <strong>Hourly Rate:</strong>{" "}
+        {tutor.hourly_rate ? `$${tutor.hourly_rate}` : "Not provided"}
       </p>
       <p>
-        <strong>Rating:</strong> {tutor.rating} ⭐
+        <strong>Rating:</strong>{" "}
+        {tutor.rating ? `${tutor.rating} ⭐` : "No ratings yet"}
       </p>
       <p>
-        <strong>Bio:</strong> {tutor.bio}
+        <strong>Bio:</strong> {tutor.bio || "No bio available"}
       </p>
+
+      {tutor.availability && (
+        <>
+          <h3>Availability</h3>
+          <ul>
+            {Object.entries(tutor.availability).map(([day, time]) => (
+              <li key={day}>
+                {day}: {time.start} - {time.end}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
