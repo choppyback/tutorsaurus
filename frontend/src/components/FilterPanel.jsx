@@ -1,9 +1,45 @@
 import React from "react";
-import { Box, TextField, Button } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+
+const faculties = [
+  "Arts and Social Sciences",
+  "Business",
+  "Computing",
+  "Dentistry",
+  "Design and Engineering",
+  "Law",
+  "Medicine",
+  "Science",
+  "Music",
+  "Public Health",
+  "Public Policy",
+];
 
 const FilterPanel = ({ filters, setFilters, onApply }) => {
   return (
     <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
+      <FormControl fullWidth>
+        <InputLabel>Faculty</InputLabel>
+        <Select
+          value={filters.faculty || ""}
+          label="Faculty"
+          onChange={(e) => setFilters({ ...filters, faculty: e.target.value })}
+        >
+          {faculties.map((f, idx) => (
+            <MenuItem key={idx} value={f}>
+              {f}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <TextField
         label="Max Price"
         type="number"
@@ -15,13 +51,6 @@ const FilterPanel = ({ filters, setFilters, onApply }) => {
         type="number"
         value={filters.rating}
         onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
-      />
-      <TextField
-        label="Availability"
-        value={filters.availability}
-        onChange={(e) =>
-          setFilters({ ...filters, availability: e.target.value })
-        }
       />
       <Button
         variant="contained"
