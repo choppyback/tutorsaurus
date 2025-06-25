@@ -4,7 +4,8 @@ import NavBar from "../components/NavBar";
 import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 import BASE_URL from "../api";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Dialog } from "@mui/material";
+import TutorProfile from "./TutorProfile";
 import styles from "../styles/home";
 
 const Home = () => {
@@ -15,6 +16,20 @@ const Home = () => {
     maxPrice: "",
     rating: "",
   });
+
+  // For tutor profile viewing
+  const [open, setOpen] = useState(false);
+  const [selectedTutorId, setSelectedTutorId] = useState(null);
+
+  const handleOpenProfile = (id) => {
+    setSelectedTutorId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedTutorId(null);
+  };
 
   const handleSearch = async (query) => {
     try {
@@ -72,12 +87,14 @@ const Home = () => {
             >
               {filteredTutors.map((tutor, index) => (
                 <Box
-                  key={index}
+                  onClick={() => handleOpenProfile(tutor.user_id)}
                   sx={{
                     p: 2,
                     borderRadius: 2,
                     backgroundColor: "#fff",
                     boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                    transition: "transform 0.2s",
+                    "&:hover": { transform: "scale(1.03)", cursor: "pointer" },
                   }}
                 >
                   <Box
@@ -108,6 +125,9 @@ const Home = () => {
           )}
         </Box>
       </Box>
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        {selectedTutorId && <TutorProfile id={selectedTutorId} />}
+      </Dialog>
     </Box>
   );
 };
