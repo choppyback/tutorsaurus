@@ -84,7 +84,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
     if (role === "tutor") {
       // Insert into tutors table
       await pool.query(
-        `INSERT INTO tutors (tutor_id, bio) VALUES ($1, $2)`,
+        `INSERT INTO tutors (user_id, bio) VALUES ($1, $2)`,
         [userId, ""] // empty bio for now
       );
 
@@ -104,7 +104,7 @@ router.post("/signup", upload.single("profile_pic"), async (req, res) => {
         const moduleId = result.rows[0].module_id;
 
         await pool.query(
-          `INSERT INTO tutor_modules (tutor_id, module_id, hourly_rate) VALUES ($1, $2, $3)`,
+          `INSERT INTO tutor_modules (user_id, module_id, hourly_rate) VALUES ($1, $2, $3)`,
           [userId, moduleId, Number(hourly_rate)]
         );
       }
