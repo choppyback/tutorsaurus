@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ import BASE_URL from "../api.js";
 import AvailabilityPicker, {
   getFormattedAvailability,
 } from "../components/AvailabilityPicker";
+import ModuleSelect from "../components/ModuleSelect";
 import styles from "../styles/signup";
 
 const faculties = [
@@ -45,9 +46,26 @@ const Signup = () => {
     year_of_study: "",
   });
   const [profilePic, setProfilePic] = useState(null);
-  const [modulesTaught, setModulesTaught] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [modules, setModules] = useState([]);
+  const [selectedModules, setSelectedModules] = useState([]);
+
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/modules`);
+        setModules(res.data);
+      } catch (err) {
+        console.error("Failed to fetch modules", err);
+      }
+    };
+
+    if (formData.role === "tutor") {
+      fetchModules();
+    }
+  }, [formData.role]);
 
   // Availability
   const defaultAvailability = {};
@@ -93,14 +111,16 @@ const Signup = () => {
       for (const key in formData) data.append(key, formData[key]);
       if (profilePic) data.append("profile_pic", profilePic);
       if (formData.role === "tutor") {
-        data.append("modules_taught", modulesTaught);
+        data.append("modules_taught", selectedModules.join(","));
         data.append("hourly_rate", hourlyRate);
         data.append(
           "availability",
           JSON.stringify(getFormattedAvailability(availability))
         );
       }
-
+      for (const [key, value] of data.entries()) {
+        console.log(`${key}:`, value);
+      }
       const res = await axios.post(`${BASE_URL}/auth/signup`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -222,11 +242,10 @@ const Signup = () => {
 
             {formData.role === "tutor" && (
               <>
-                <TextField
-                  label="Modules Taught (e.g. CS2030S,CS2040S)"
-                  value={modulesTaught}
-                  onChange={(e) => setModulesTaught(e.target.value)}
-                  required
+                <ModuleSelect
+                  options={modules}
+                  value={selectedModules}
+                  onChange={setSelectedModules}
                 />
                 <TextField
                   label="Hourly Rate (e.g. 30)"
