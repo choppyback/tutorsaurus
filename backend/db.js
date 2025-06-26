@@ -6,9 +6,9 @@ const pool = new Pool({
   password: process.env.PSQL_PASSWORD || "password",
   port: process.env.PSQL_PORT || 5432,
   database: process.env.PSQL_DATABASE || "tutorsaurus",
-  ssl: {
+  /*ssl: {
     rejectUnauthorized: false,
-  },
+  },*/
 });
 
 module.exports = pool;

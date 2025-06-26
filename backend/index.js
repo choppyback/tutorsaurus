@@ -13,8 +13,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //routes
 
 app.use("/dashboard", require("./routes/dashboard"));
-
 app.use("/auth", require("./routes/auth"));
+app.use("/api/search", require("./routes/search"));
+app.use("/api/profile", require("./routes/profile"));
+app.use("/api/modules", require("./routes/modules"));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
