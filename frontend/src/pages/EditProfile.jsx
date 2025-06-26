@@ -21,6 +21,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilityPicker, {
   getFormattedAvailability,
 } from "../components/AvailabilityPicker";
+import ModuleSelect from "../components/ModuleSelect";
 import dayjs from "dayjs";
 import styles from "../styles/editprofile";
 
@@ -49,6 +50,7 @@ function EditProfile() {
   const [originalData, setOriginalData] = useState(null);
   const token = localStorage.getItem("token");
   const [newProfilePic, setNewProfilePic] = useState(null);
+  const [modules, setModules] = useState([]);
 
   const isAvailabilityFilled = () => {
     for (const day in availability) {
@@ -90,8 +92,18 @@ function EditProfile() {
     }
   };
 
+  const fetchModules = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/modules`);
+      setModules(res.data);
+    } catch (err) {
+      console.error("Failed to fetch modules", err);
+    }
+  };
+
   useEffect(() => {
     fetchProfile();
+    fetchModules();
   }, []);
 
   const handleSave = async () => {
@@ -287,18 +299,19 @@ function EditProfile() {
                         }
                         margin="normal"
                       />
-                      <TextField
-                        fullWidth
-                        label="Modules Taught (comma-separated)"
-                        required
-                        value={userData.modules_taught || ""}
-                        onChange={(e) =>
+                      <ModuleSelect
+                        options={modules}
+                        value={
+                          userData.modules_taught
+                            ? userData.modules_taught.split(", ")
+                            : []
+                        }
+                        onChange={(newModules) =>
                           setUserData({
                             ...userData,
-                            modules_taught: e.target.value,
+                            modules_taught: newModules.join(", "),
                           })
                         }
-                        margin="normal"
                       />
                       <TextField
                         fullWidth
