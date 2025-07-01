@@ -35,14 +35,4 @@ router.post(
 );
 router.post("/login", validateLogin, loginUser);
 
-// verify jwt token
-router.get("/verify", authorize, async (req, res) => {
-  try {
-    res.json(true);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
 module.exports = router;
