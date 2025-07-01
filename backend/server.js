@@ -9,6 +9,8 @@ const pool = require("./db");
 
 app.use(cors());
 app.use(express.json());
+// Serve static files (e.g., profile pictures) from the 'uploads' directory
+// Accessed via /uploads/<filename>
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //routes
