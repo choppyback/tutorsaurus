@@ -20,7 +20,7 @@ const LandingPage = () => {
         </Box>
       </Box>
 
-      {/* Logo Section */}
+      {/* Main Content */}
       <Container maxWidth="md" sx={styles.heroContainer}>
         <Box
           component="img"
