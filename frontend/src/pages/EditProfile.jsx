@@ -39,7 +39,7 @@ const faculties = [
   "Public Policy",
 ];
 
-const genders = ["Male", "Female", "Other"];
+const genders = ["Male", "Female"];
 const years = [1, 2, 3, 4, 5];
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
