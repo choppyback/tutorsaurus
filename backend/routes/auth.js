@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const pool = require("../db");
-const bcrypt = require("bcrypt");
-const jwtGenerator = require("../utils/jwtGenerator");
-const validInfo = require("../middleware/validInfo");
+
+// Import Middleware
+const validateLogin = require("../middleware/validateLogin");
+const validateSignup = require("../middleware/validateSignup");
 const authorize = require("../middleware/authorize");
 
 // Import Controllers
@@ -26,11 +26,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Register route
-router.post("/signup", upload.single("profile_pic"), signupUser);
-
-// Login route
-router.post("/login", validInfo, loginUser);
+// Routes
+router.post(
+  "/signup",
+  upload.single("profile_pic"),
+  validateSignup,
+  signupUser
+);
+router.post("/login", validateLogin, loginUser);
 
 // verify jwt token
 router.get("/verify", authorize, async (req, res) => {
