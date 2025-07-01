@@ -58,4 +58,5 @@ CREATE TABLE availability (
   start_time TIME,
   end_time TIME,
   PRIMARY KEY (user_id, day, start_time)
+  check(end_time > start_time)
 );
