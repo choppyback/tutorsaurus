@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import BASE_URL from "../api.js";
+import BASE_URL from "../../api.js";
 import AvailabilityPicker, {
   getFormattedAvailability,
-} from "../components/AvailabilityPicker";
-import ModuleSelect from "../components/ModuleSelect";
-import styles from "../styles/signup";
+} from "../../components/AvailabilityPicker.jsx";
+import ModuleSelect from "../../components/ModuleSelect.jsx";
+import styles from "./signup.js";
 
 const faculties = [
   "Arts and Social Sciences",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../api";
+import BASE_URL from "../../api";
 
 function TutorProfile({ id: propId }) {
   const [tutor, setTutor] = useState(null);

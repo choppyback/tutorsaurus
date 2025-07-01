@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import NavBar from "../components/NavBar";
-import SearchBar from "../components/SearchBar";
-import FilterPanel from "../components/FilterPanel";
-import BASE_URL from "../api";
+import NavBar from "../../components/NavBar";
+import SearchBar from "../../components/SearchBar";
+import FilterPanel from "../../components/FilterPanel";
+import BASE_URL from "../../api.js";
 import { Box, Typography, Dialog } from "@mui/material";
-import TutorProfile from "./TutorProfile";
-import styles from "../styles/home";
+import TutorProfile from "../TutorProfile/TutorProfile.jsx";
+import styles from "./home";
 
 const Home = () => {
   const [tutors, setTutors] = useState([]);

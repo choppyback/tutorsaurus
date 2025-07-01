@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar";
 import axios from "axios";
-import BASE_URL from "../api";
+import BASE_URL from "../../api";
 import {
   Tooltip,
   Box,
@@ -20,10 +20,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilityPicker, {
   getFormattedAvailability,
-} from "../components/AvailabilityPicker";
-import ModuleSelect from "../components/ModuleSelect";
+} from "../../components/AvailabilityPicker";
+import ModuleSelect from "../../components/ModuleSelect";
 import dayjs from "dayjs";
-import styles from "../styles/editprofile";
+import styles from "./editprofile";
 
 const faculties = [
   "Arts and Social Sciences",
