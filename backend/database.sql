@@ -22,7 +22,8 @@ CREATE TABLE tutors (
 -- MODULES TABLE (list of module codes)
 CREATE TABLE modules (
   module_id SERIAL PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL
+  code TEXT UNIQUE NOT NULL,
+  title TEXT
 );
 
 -- TUTOR_MODULES TABLE (many-to-many tutor-module relationships with hourly rate)
