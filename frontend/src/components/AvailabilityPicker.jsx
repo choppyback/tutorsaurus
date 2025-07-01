@@ -37,15 +37,20 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
 
   const validateTimeRange = (day, fieldToClear) => {
     const { start, end } = availability[day] || {};
-    if (start && end && dayjs(start).isAfter(dayjs(end))) {
-      alert(`Invalid time for ${day}: start must be before end`);
-      setAvailability((prev) => ({
-        ...prev,
-        [day]: {
-          ...prev[day],
-          [fieldToClear]: null,
-        },
-      }));
+    if (start && end) {
+      const startTime = dayjs(start);
+      const endTime = dayjs(end);
+
+      if (!startTime.isBefore(endTime)) {
+        alert(`Invalid time for ${day}: start must be before end`);
+        setAvailability((prev) => ({
+          ...prev,
+          [day]: {
+            ...prev[day],
+            [fieldToClear]: null,
+          },
+        }));
+      }
     }
   };
 
