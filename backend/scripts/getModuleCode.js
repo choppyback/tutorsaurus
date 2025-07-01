@@ -8,7 +8,7 @@ const getModuleCode = async () => {
     const { data: modules } = await axios.get(MODULE_LIST_URL);
 
     for (const module of modules) {
-      const { moduleCode, title } = module;
+      const { moduleCode } = module;
 
       await pool.query(
         `INSERT INTO modules (code)
