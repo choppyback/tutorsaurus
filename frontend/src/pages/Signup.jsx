@@ -128,7 +128,7 @@ const Signup = () => {
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/home");
     } catch (err) {
-      const msg = err.response?.data?.error || "Signup failed.";
+      const msg = err.response?.data;
       alert(`Signup failed: ${msg}`);
     }
   };
