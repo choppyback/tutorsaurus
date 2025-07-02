@@ -55,13 +55,10 @@ const signupSchema = Joi.object({
       .custom((value, helpers) => {
         try {
           const parsed = JSON.parse(value);
-          const hasAtLeastOne = Object.values(parsed).some(
-            (slot) => slot.enabled && slot.start && slot.end
-          );
 
-          if (!hasAtLeastOne) {
+          if (parsed.length === 0) {
             return helpers.message(
-              "At least one availability slot must be filled in"
+              "At least one availability slot must be provided"
             );
           }
 
