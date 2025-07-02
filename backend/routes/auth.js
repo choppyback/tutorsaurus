@@ -3,7 +3,6 @@ const router = require("express").Router();
 // Import Middleware
 const validateLogin = require("../middleware/validateLogin");
 const validateSignup = require("../middleware/validateSignup");
-const authorize = require("../middleware/authorize");
 
 // Import Controllers
 const signupUser = require("../controllers/signupController");
