@@ -8,7 +8,7 @@ const getModules = async (req, res) => {
     res.json(moduleCodes);
   } catch (err) {
     console.error("Error fetching modules:", err.message);
-    res.status(500).send("Server error");
+    res.status(500).send("Error fetching modules");
   }
 };
 
