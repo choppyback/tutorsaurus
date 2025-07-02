@@ -18,9 +18,7 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import AvailabilityPicker, {
-  getFormattedAvailability,
-} from "../../components/AvailabilityPicker";
+import AvailabilityPicker from "../../components/AvailabilityPicker";
 import ModuleSelect from "../../components/ModuleSelect";
 import dayjs from "dayjs";
 import styles from "./editprofile";
@@ -69,24 +67,22 @@ function EditProfile() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const newAvailability = {};
-      for (const day of days) {
-        const data = res.data.availability?.[day] || {};
-        newAvailability[day] = {
-          enabled: !!data.enabled,
-          start: data.start ? dayjs(`2000-01-01 ${data.start}`) : null,
-          end: data.end ? dayjs(`2000-01-01 ${data.end}`) : null,
-        };
-      }
+      // Convert array of slots to ScheduleSelector-compatible dates
+      const availabilitySlots = res.data.availability || [];
+      const base = dayjs("2025-06-30"); // start of the week (Monday)
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+      const converted = availabilitySlots;
 
       const userWithFormattedAvailability = {
         ...res.data,
-        availability: newAvailability,
+        availability: converted,
       };
-      setUserData(userWithFormattedAvailability);
-      setOriginalData(userWithFormattedAvailability);
+
+      setUserData(res.data);
+      setOriginalData(res.data);
       setOriginalEmail(res.data.email);
-      setAvailability(newAvailability);
+      setAvailability(res.data.availability); // for ScheduleSelector
     } catch (err) {
       console.error("Profile fetch failed:", err.response?.data || err.message);
     }
@@ -129,10 +125,7 @@ function EditProfile() {
         formData.append("bio", userData.bio || "");
         formData.append("modules_taught", userData.modules_taught);
         formData.append("hourly_rate", userData.hourly_rate);
-        formData.append(
-          "availability",
-          JSON.stringify(getFormattedAvailability(availability))
-        );
+        formData.append("availability", JSON.stringify(availability));
       }
 
       if (newProfilePic) {
