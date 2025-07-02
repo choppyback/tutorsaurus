@@ -81,14 +81,14 @@ const signupUser = async (req, res) => {
       }
 
       // Insert tutor availability
-      const parsedAvailability = availability ? JSON.parse(availability) : {};
-      for (const [day, slot] of Object.entries(parsedAvailability)) {
-        const { enabled, start, end } = slot;
-        if (enabled && start && end) {
+      const parsedAvailability = availability ? JSON.parse(availability) : [];
+      for (const slot of parsedAvailability) {
+        const { day, start_time, end_time } = slot;
+        if (day && start_time && end_time) {
           await pool.query(
             `INSERT INTO availability (user_id, day, start_time, end_time)
-             VALUES ($1, $2, $3, $4)`,
-            [userId, day, start, end]
+       VALUES ($1, $2, $3, $4)`,
+            [userId, day, start_time, end_time]
           );
         }
       }
