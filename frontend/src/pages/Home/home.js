@@ -1,6 +1,6 @@
 const styles = {
   page: {
-    backgroundColor: "#FAF6EE",
+    background: "linear-gradient(to right, #fef1f1, #fefae9)",
     minHeight: "100vh",
     py: 0,
   },
