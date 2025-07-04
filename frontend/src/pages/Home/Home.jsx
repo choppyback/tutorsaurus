@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "../../components/NavBar";
 import SearchBar from "../../components/SearchBar";
@@ -57,10 +57,25 @@ const Home = () => {
     setFilteredTutors(filtered);
   };
 
+  useEffect(() => {
+    handleSearch("");
+  }, []);
+
   return (
     <Box sx={styles.page}>
       <NavBar />
       <SearchBar onSearch={handleSearch} />
+
+      {/* Tutor count message */}
+      <Box sx={{ px: 7, pt: 2 }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+          {filteredTutors.length > 0
+            ? `Found ${filteredTutors.length} tutor${
+                filteredTutors.length > 1 ? "s" : ""
+              } for you`
+            : "No tutors found. Please try a different search."}
+        </Typography>
+      </Box>
 
       {/* Filter + Results Box */}
       <Box sx={{ display: "flex", px: 3, pt: 4, gap: 4 }}>
@@ -75,54 +90,50 @@ const Home = () => {
 
         {/* Right Tutor Cards */}
         <Box sx={{ flex: 1 }}>
-          {filteredTutors.length === 0 ? (
-            <Typography>No tutors found.</Typography>
-          ) : (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: 3,
-              }}
-            >
-              {filteredTutors.map((tutor, index) => (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 3,
+            }}
+          >
+            {filteredTutors.map((tutor, index) => (
+              <Box
+                onClick={() => handleOpenProfile(tutor.user_id)}
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: "#fff",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                  transition: "transform 0.2s",
+                  "&:hover": { transform: "scale(1.03)", cursor: "pointer" },
+                }}
+              >
                 <Box
-                  onClick={() => handleOpenProfile(tutor.user_id)}
+                  component="img"
+                  src={BASE_URL + tutor.profile_pic}
+                  alt={tutor.name}
                   sx={{
-                    p: 2,
+                    width: 160,
+                    height: 160,
                     borderRadius: 2,
-                    backgroundColor: "#fff",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                    transition: "transform 0.2s",
-                    "&:hover": { transform: "scale(1.03)", cursor: "pointer" },
+                    objectFit: "cover",
+                    mb: 2,
                   }}
-                >
-                  <Box
-                    component="img"
-                    src={BASE_URL + tutor.profile_pic}
-                    alt={tutor.name}
-                    sx={{
-                      width: 160,
-                      height: 160,
-                      borderRadius: 2,
-                      objectFit: "cover",
-                      mb: 2,
-                    }}
-                  />
-                  <Typography fontWeight="bold">{tutor.name}</Typography>
-                  <Typography fontSize="0.875rem">
-                    Module: {tutor.all_modules}
-                  </Typography>
-                  <Typography fontSize="0.875rem">
-                    Faculty: {tutor.faculty}
-                  </Typography>
-                  <Typography fontSize="0.875rem">
-                    Hourly Rate: {tutor.hourly_rate}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
+                />
+                <Typography fontWeight="bold">{tutor.name}</Typography>
+                <Typography fontSize="0.875rem">
+                  Module: {tutor.all_modules}
+                </Typography>
+                <Typography fontSize="0.875rem">
+                  Faculty: {tutor.faculty}
+                </Typography>
+                <Typography fontSize="0.875rem">
+                  Hourly Rate: {tutor.hourly_rate}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
