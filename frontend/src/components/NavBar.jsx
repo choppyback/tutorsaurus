@@ -19,10 +19,11 @@ const NavBar = () => {
       position="static"
       sx={{
         backgroundColor: "#fff",
-        boxShadow: "none",
+        boxShadow: "0px 3px 3px rgba(0, 0, 0, 0.1)",
         px: 3,
         minHeight: 90,
         justifyContent: "center",
+        mb: 3,
       }}
     >
       <Toolbar
