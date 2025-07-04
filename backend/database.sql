@@ -22,7 +22,8 @@ CREATE TABLE tutors (
 -- MODULES TABLE (list of module codes)
 CREATE TABLE modules (
   module_id SERIAL PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL
+  code TEXT UNIQUE NOT NULL,
+  title TEXT
 );
 
 -- TUTOR_MODULES TABLE (many-to-many tutor-module relationships with hourly rate)
@@ -59,4 +60,18 @@ CREATE TABLE availability (
   end_time TIME,
   PRIMARY KEY (user_id, day, start_time)
   check(end_time > start_time)
+);
+
+-- BOOKINGS TABLE
+CREATE TABLE bookings (
+  booking_id SERIAL PRIMARY KEY,
+  tutor_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
+  student_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  module_id INTEGER REFERENCES modules(module_id),
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  status TEXT DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled', 'completed')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(tutor_id, date, start_time)  -- prevent double booking
 );

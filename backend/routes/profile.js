@@ -72,15 +72,11 @@ router.get("/", authorize, async (req, res) => {
         [user_id]
       );
 
-      const availability = {};
-      for (const row of availabilityRes.rows) {
-        if (!availability[row.day]) availability[row.day] = [];
-        availability[row.day] = {
-          enabled: true,
-          start: row.start_time,
-          end: row.end_time,
-        };
-      }
+      const availability = availabilityRes.rows.map((row) => ({
+        day: row.day,
+        start_time: row.start_time,
+        end_time: row.end_time,
+      }));
 
       user.bio = tutorRes.rows[0]?.bio || "";
       user.availability = availability;
@@ -147,15 +143,11 @@ router.get("/:id", async (req, res) => {
       [user_id]
     );
 
-    const availability = {};
-    for (const row of availabilityRes.rows) {
-      if (!availability[row.day]) availability[row.day] = {};
-      availability[row.day] = {
-        enabled: true,
-        start: row.start_time,
-        end: row.end_time,
-      };
-    }
+    const availability = availabilityRes.rows.map((row) => ({
+      day: row.day,
+      start_time: row.start_time,
+      end_time: row.end_time,
+    }));
 
     user.bio = tutorRes.rows[0]?.bio || "";
     user.modules_taught = modules;
@@ -246,14 +238,14 @@ router.put("/", authorize, upload.single("profile_pic"), async (req, res) => {
         user_id,
       ]);
 
-      for (const [day, { enabled, start, end }] of Object.entries(
-        availability
-      )) {
-        if (enabled && start && end) {
+      for (const slot of availability) {
+        const { day, start_time, end_time } = slot;
+
+        if (day && start_time && end_time) {
           await pool.query(
             `INSERT INTO availability (user_id, day, start_time, end_time)
-             VALUES ($1, $2, $3, $4)`,
-            [user_id, day, start, end]
+       VALUES ($1, $2, $3, $4)`,
+            [user_id, day, start_time, end_time]
           );
         }
       }

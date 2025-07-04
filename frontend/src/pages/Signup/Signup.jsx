@@ -13,12 +13,10 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import BASE_URL from "../api.js";
-import AvailabilityPicker, {
-  getFormattedAvailability,
-} from "../components/AvailabilityPicker";
-import ModuleSelect from "../components/ModuleSelect";
-import styles from "../styles/signup";
+import BASE_URL from "../../api.js";
+import AvailabilityPicker from "../../components/AvailabilityPicker.jsx";
+import ModuleSelect from "../../components/ModuleSelect.jsx";
+import styles from "./signup.js";
 
 const faculties = [
   "Arts and Social Sciences",
@@ -49,7 +47,7 @@ const Signup = () => {
   const [hourlyRate, setHourlyRate] = useState("");
   const [modules, setModules] = useState([]);
   const [selectedModules, setSelectedModules] = useState([]);
-
+  const [availability, setAvailability] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -67,21 +65,12 @@ const Signup = () => {
     }
   }, [formData.role]);
 
-  // Availability
-  const defaultAvailability = {};
-  ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach((d) => {
-    defaultAvailability[d] = { enabled: false, start: null, end: null };
-  });
-  const [availability, setAvailability] = useState(defaultAvailability);
-
+  // Value check
   const isAvailabilityFilled = () => {
     // Make sure all timing field are filled before submit
-    for (const day in availability) {
-      const slot = availability[day];
-      if (slot.enabled && (!slot.start || !slot.end)) {
-        setError(`Please provide both start and end time for ${day}.`);
-        return false;
-      }
+    if (formData.role === "tutor" && availability.length === 0) {
+      setError("Please select at least one availability slot.");
+      return false;
     }
     return true;
   };
@@ -113,11 +102,10 @@ const Signup = () => {
       if (formData.role === "tutor") {
         data.append("modules_taught", selectedModules.join(","));
         data.append("hourly_rate", hourlyRate);
-        data.append(
-          "availability",
-          JSON.stringify(getFormattedAvailability(availability))
-        );
+        data.append("availability", JSON.stringify(availability));
       }
+
+      // Log form data (DEBUGGING)
       for (const [key, value] of data.entries()) {
         console.log(`${key}:`, value);
       }
@@ -128,7 +116,7 @@ const Signup = () => {
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/home");
     } catch (err) {
-      const msg = err.response?.data?.error || "Signup failed.";
+      const msg = err.response?.data;
       alert(`Signup failed: ${msg}`);
     }
   };

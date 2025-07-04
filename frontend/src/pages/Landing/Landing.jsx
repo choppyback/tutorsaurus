@@ -1,6 +1,6 @@
 import { Typography, Button, Box, Container } from "@mui/material";
 import { Link } from "react-router-dom";
-import styles from "../styles/landing";
+import styles from "./landing";
 
 const LandingPage = () => {
   return (
@@ -20,7 +20,7 @@ const LandingPage = () => {
         </Box>
       </Box>
 
-      {/* Logo Section */}
+      {/* Main Content */}
       <Container maxWidth="md" sx={styles.heroContainer}>
         <Box
           component="img"

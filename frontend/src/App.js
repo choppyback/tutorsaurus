@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import EditProfile from "./pages/EditProfile";
+import Signup from "./pages/Signup/Signup.jsx";
+import Landing from "./pages/Landing/Landing.jsx";
+import Login from "./pages/Login/Login.jsx";
+import Home from "./pages/Home/Home.jsx";
+import EditProfile from "./pages/EditProfile/EditProfile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../api";
+import BASE_URL from "../../api";
 
 function TutorProfile({ id: propId }) {
   const [tutor, setTutor] = useState(null);
@@ -60,9 +60,9 @@ function TutorProfile({ id: propId }) {
         <>
           <h3>Availability</h3>
           <ul>
-            {Object.entries(tutor.availability).map(([day, time]) => (
-              <li key={day}>
-                {day}: {time.start} - {time.end}
+            {tutor.availability.map((slot, idx) => (
+              <li key={idx}>
+                {slot.day}: {slot.start_time} - {slot.end_time}
               </li>
             ))}
           </ul>

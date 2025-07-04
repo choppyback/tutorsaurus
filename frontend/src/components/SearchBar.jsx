@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, InputBase, IconButton, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 function SearchBar({ onSearch }) {
   const [query, setQuery] = useState("");
@@ -9,31 +10,46 @@ function SearchBar({ onSearch }) {
   };
 
   return (
-    <Box sx={{ px: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <TextField
+    <Box
+      sx={{
+        py: 6,
+        textAlign: "center",
+      }}
+    >
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
+        Find the right tutor for your academic needs.
+      </Typography>
+
+      {/* Search Box */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          maxWidth: 700,
+          height: 70,
+          borderRadius: "12px",
+          mx: "auto",
+          backgroundColor: "#fff",
+          borderRadius: "10px",
+          px: 2,
+          boxShadow: 5,
+        }}
+      >
+        <InputBase
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by module code (e.g. CS2030S)"
-          variant="outlined"
+          placeholder="By Keyword"
+          fullWidth
           sx={{
-            width: 300,
-            backgroundColor: "#fff",
-            borderRadius: 2,
+            py: 1.2,
+            px: 2,
+            fontSize: 16,
           }}
         />
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          sx={{
-            ml: 2,
-            backgroundColor: "#A2CB75",
-            color: "#294A29",
-            fontWeight: "bold",
-          }}
-        >
-          Search
-        </Button>
+        <IconButton onClick={handleSubmit}>
+          <SearchIcon />
+        </IconButton>
       </Box>
     </Box>
   );
