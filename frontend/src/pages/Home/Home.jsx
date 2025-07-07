@@ -34,6 +34,7 @@ const Home = () => {
   const handleSearch = async (query) => {
     try {
       const res = await axios.get(`${BASE_URL}/api/search?module=${query}`);
+      setFilters({ faculty: "", maxPrice: "", rating: "" }); // clear filters each time search query changes
       setTutors(res.data);
       setFilteredTutors(res.data); // default to all results
     } catch (err) {
@@ -41,7 +42,12 @@ const Home = () => {
     }
   };
 
-  const applyFilters = () => {
+  useEffect(() => {
+    handleSearch("");
+  }, []);
+
+  // apply filters whenever there are changes to filters
+  useEffect(() => {
     const filtered = tutors.filter((tutor) => {
       const passFaculty =
         !filters.faculty ||
@@ -55,14 +61,6 @@ const Home = () => {
     });
 
     setFilteredTutors(filtered);
-  };
-
-  useEffect(() => {
-    handleSearch("");
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
   }, [filters]);
 
   return (
