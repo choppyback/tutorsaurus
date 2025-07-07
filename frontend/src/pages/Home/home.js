@@ -4,24 +4,6 @@ const styles = {
     minHeight: "100vh",
     py: 0,
   },
-  brandHeader: {
-    px: 5,
-    pt: 2,
-  },
-  brandContent: {
-    display: "flex",
-    alignItems: "center",
-  },
-  brandLogo: {
-    height: 40,
-    width: 40,
-    mr: 1,
-  },
-  title: {
-    color: "#294A29",
-    mb: 2,
-    fontWeight: "bold",
-  },
   logoutButton: {
     mt: 4,
     borderColor: "#A2CB75",
@@ -32,7 +14,9 @@ const styles = {
       backgroundColor: "#f0f5e9",
     },
   },
-  sidebar: {
+  filterbar: {
+    top: 105,
+    position: "sticky",
     width: 280,
     backgroundColor: "#fff",
     borderRadius: 2,
