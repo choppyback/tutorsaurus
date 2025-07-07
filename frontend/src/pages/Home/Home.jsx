@@ -61,6 +61,10 @@ const Home = () => {
     handleSearch("");
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters]);
+
   return (
     <Box sx={styles.page}>
       <NavBar />
@@ -81,11 +85,7 @@ const Home = () => {
       <Box sx={{ display: "flex", px: 3, pt: 4, gap: 4 }}>
         {/* Left Sidebar */}
         <Box sx={styles.filterbar}>
-          <FilterPanel
-            filters={filters}
-            setFilters={setFilters}
-            onApply={applyFilters}
-          />
+          <FilterPanel filters={filters} setFilters={setFilters} />
         </Box>
 
         {/* Right Tutor Cards */}
