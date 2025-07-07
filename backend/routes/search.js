@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
       u.faculty, 
       u.profile_pic, 
       tm.hourly_rate, 
+      t.bio,
       STRING_AGG(DISTINCT m_all.code, ', ') AS all_modules
     FROM users u
     JOIN tutors t ON u.user_id = t.user_id
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
     JOIN tutor_modules tm_all ON tm_all.user_id = t.user_id
     JOIN modules m_all ON tm_all.module_id = m_all.module_id
     WHERE m_query.code ILIKE $1
-    GROUP BY u.user_id, u.name, u.faculty, u.profile_pic, tm.hourly_rate`,
+    GROUP BY u.user_id, u.name, u.faculty, u.profile_pic, tm.hourly_rate, t.bio`,
       [`%${module}%`]
     );
     res.json(result.rows);
