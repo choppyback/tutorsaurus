@@ -23,7 +23,11 @@ const faculties = [
   "Public Policy",
 ];
 
-const FilterPanel = ({ filters, setFilters, onApply }) => {
+const FilterPanel = ({ filters, setFilters }) => {
+  const handleClear = () => {
+    setFilters({ faculty: "", maxPrice: "", rating: "" });
+  };
+
   return (
     <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
       <FormControl fullWidth>
@@ -56,15 +60,15 @@ const FilterPanel = ({ filters, setFilters, onApply }) => {
         onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
       />
       <Button
-        variant="contained"
-        onClick={onApply}
+        variant="outlined"
+        onClick={handleClear}
         sx={{
-          backgroundColor: "#A2CB75",
+          borderColor: "#A2CB75",
           color: "#294A29",
           fontWeight: "bold",
         }}
       >
-        Filter
+        Clear Filters
       </Button>
     </Box>
   );
