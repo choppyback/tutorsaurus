@@ -4,7 +4,7 @@ import NavBar from "../../components/NavBar";
 import SearchBar from "../../components/SearchBar";
 import FilterPanel from "../../components/FilterPanel";
 import BASE_URL from "../../api.js";
-import { Box, Typography, Dialog } from "@mui/material";
+import { Button, Stack, Box, Typography, Dialog } from "@mui/material";
 import TutorProfile from "../TutorProfile/TutorProfile.jsx";
 import styles from "./home";
 
@@ -68,8 +68,7 @@ const Home = () => {
       <NavBar />
       <SearchBar onSearch={handleSearch} />
 
-      {/* Tutor count message */}
-      <Box sx={{ px: 7, pt: 2 }}>
+      <Box sx={{ px: "90px", pt: 2 }}>
         <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
           {filteredTutors.length > 0
             ? `Found ${filteredTutors.length} tutor${
@@ -79,60 +78,106 @@ const Home = () => {
         </Typography>
       </Box>
 
-      {/* Filter + Results Box */}
-      <Box sx={{ display: "flex", px: 3, pt: 4, gap: 4 }}>
-        {/* Left Sidebar */}
+      <Box sx={{ display: "flex", px: "66px", pt: 4, gap: 4 }}>
         <Box sx={styles.filterbar}>
           <FilterPanel filters={filters} setFilters={setFilters} />
         </Box>
 
-        {/* Right Tutor Cards */}
-        <Box sx={{ flex: 1 }}>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: 3,
-            }}
-          >
-            {filteredTutors.map((tutor, index) => (
+        <Stack spacing={3} sx={{ flex: 1 }}>
+          {filteredTutors.map((tutor, index) => (
+            <Box sx={styles.card}>
               <Box
-                onClick={() => handleOpenProfile(tutor.user_id)}
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  backgroundColor: "#fff",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                  transition: "transform 0.2s",
-                  "&:hover": { transform: "scale(1.03)", cursor: "pointer" },
-                }}
+                component="img"
+                src={BASE_URL + tutor.profile_pic}
+                alt={tutor.name}
+                sx={styles.tutorImage}
+              />
+
+              <Box
+                flex={1}
+                display="flex"
+                gap={4}
+                justifyContent="space-between"
+                sx={{ pr: 3 }}
               >
-                <Box
-                  component="img"
-                  src={BASE_URL + tutor.profile_pic}
-                  alt={tutor.name}
-                  sx={{
-                    width: 160,
-                    height: 160,
-                    borderRadius: 2,
-                    objectFit: "cover",
-                    mb: 2,
-                  }}
-                />
-                <Typography fontWeight="bold">{tutor.name}</Typography>
-                <Typography fontSize="0.875rem">
-                  Module: {tutor.all_modules}
-                </Typography>
-                <Typography fontSize="0.875rem">
-                  Faculty: {tutor.faculty}
-                </Typography>
-                <Typography fontSize="0.875rem">
-                  Hourly Rate: {tutor.hourly_rate}
-                </Typography>
+                <Box display="flex" flex={1} flexDirection="column" gap={1}>
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <Typography fontWeight="bold" fontSize="18px">
+                      {tutor.name}
+                    </Typography>
+                    <Typography fontSize="12px" lineHeight="1" display="inline">
+                      ⭐
+                    </Typography>
+                    <Typography
+                      fontWeight="bold"
+                      fontSize="14px"
+                      lineHeight="1"
+                    >
+                      3.50
+                    </Typography>
+                    <Typography
+                      color="text.secondary"
+                      sx={{ fontSize: "14px", lineHeight: 1 }}
+                    >
+                      (0)
+                    </Typography>
+                  </Box>
+
+                  <Typography fontWeight="bold" fontSize="16px">
+                    Hourly Rate: ${tutor.hourly_rate}
+                  </Typography>
+
+                  <Typography fontSize="15px">
+                    <Box component="span" fontWeight="bold">
+                      Teaches:
+                    </Box>{" "}
+                    {tutor.all_modules}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" flex={1} flexDirection="column">
+                  <Box>
+                    <Typography fontSize="17px" fontWeight="bold">
+                      About
+                    </Typography>
+                    <Typography
+                      color="text.secondary"
+                      fontSize="15px"
+                      sx={{
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 5,
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {tutor.bio}...
+                    </Typography>
+                  </Box>
+                  <Typography
+                    onClick={() => handleOpenProfile(tutor.user_id)}
+                    sx={{
+                      color: "primary.main",
+                      cursor: "pointer",
+                      fontWeight: "medium",
+                      mt: 1,
+                    }}
+                  >
+                    View profile
+                  </Typography>
+                </Box>
               </Box>
-            ))}
-          </Box>
-        </Box>
+
+              <Box sx={styles.divider} />
+
+              <Box display="flex" alignItems="center">
+                <Button variant="contained" sx={styles.bookButton}>
+                  Book now
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Stack>
       </Box>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         {selectedTutorId && <TutorProfile id={selectedTutorId} />}
