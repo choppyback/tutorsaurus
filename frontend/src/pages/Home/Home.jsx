@@ -80,7 +80,7 @@ const Home = () => {
       {/* Filter + Results Box */}
       <Box sx={{ display: "flex", px: 3, pt: 4, gap: 4 }}>
         {/* Left Sidebar */}
-        <Box sx={styles.sidebar}>
+        <Box sx={styles.filterbar}>
           <FilterPanel
             filters={filters}
             setFilters={setFilters}
