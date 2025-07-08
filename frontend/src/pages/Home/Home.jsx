@@ -157,10 +157,14 @@ const Home = () => {
                   <Typography
                     onClick={() => handleOpenProfile(tutor.user_id)}
                     sx={{
-                      color: "primary.main",
                       cursor: "pointer",
-                      fontWeight: "medium",
-                      mt: 1,
+                      fontWeight: "bold",
+                      fontSize: "15px",
+                      mt: 2,
+                      textDecoration: "underline",
+                      "&:hover": {
+                        color: "green",
+                      },
                     }}
                   >
                     View profile
