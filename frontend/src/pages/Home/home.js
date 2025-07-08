@@ -4,16 +4,6 @@ const styles = {
     minHeight: "100vh",
     py: 0,
   },
-  logoutButton: {
-    mt: 4,
-    borderColor: "#A2CB75",
-    color: "#294A29",
-    fontWeight: "bold",
-    textTransform: "none",
-    "&:hover": {
-      backgroundColor: "#f0f5e9",
-    },
-  },
   filterbar: {
     top: 105,
     position: "sticky",
