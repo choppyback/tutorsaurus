@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../api";
+import { Modal, Box, Typography, Divider } from "@mui/material";
+import styles from "./TutorProfile";
 
-function TutorProfile({ id: propId }) {
+function TutorProfile({ id, open, onClose }) {
   const [tutor, setTutor] = useState(null);
-  const id = propId;
 
   useEffect(() => {
+    if (!id) return;
     const fetchTutor = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/profile/${id}`);
@@ -19,56 +21,100 @@ function TutorProfile({ id: propId }) {
     fetchTutor();
   }, [id]);
 
-  if (!tutor) return <p>Loading profile...</p>;
+  if (!tutor) return null;
 
   return (
-    <div className="tutor-profile">
-      {tutor.profile_pic && (
-        <img
-          src={`${BASE_URL}${tutor.profile_pic}`}
-          alt="Tutor"
-          style={{ width: "150px", borderRadius: "8px" }}
-        />
-      )}
-      <h2>{tutor.name}</h2>
-      <p>
-        <strong>Email:</strong> {tutor.email}
-      </p>
-      <p>
-        <strong>Faculty:</strong> {tutor.faculty}
-      </p>
-      <p>
-        <strong>Year of Study:</strong> {tutor.year_of_study}
-      </p>
-      <p>
-        <strong>Modules Taught:</strong>{" "}
-        {tutor.modules_taught || "Not specified"}
-      </p>
-      <p>
-        <strong>Hourly Rate:</strong>{" "}
-        {tutor.hourly_rate ? `$${tutor.hourly_rate}` : "Not provided"}
-      </p>
-      <p>
-        <strong>Rating:</strong>{" "}
-        {tutor.rating ? `${tutor.rating} ⭐` : "No ratings yet"}
-      </p>
-      <p>
-        <strong>Bio:</strong> {tutor.bio || "No bio available"}
-      </p>
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "50%",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        {/* Tutor Info */}
+        <Box display="flex" gap={2} alignItems="flex-start">
+          {/* LEFT: Tutor image */}
+          <Box>
+            <Box
+              component="img"
+              src={BASE_URL + tutor.profile_pic}
+              sx={styles.tutorImage}
+            />
+          </Box>
 
-      {tutor.availability && (
-        <>
-          <h3>Availability</h3>
-          <ul>
-            {tutor.availability.map((slot, idx) => (
-              <li key={idx}>
-                {slot.day}: {slot.start_time} - {slot.end_time}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </div>
+          {/* RIGHT: Text Content */}
+          <Box display="flex" flexDirection="column" flex={1}>
+            {/* Name + Rating */}
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Typography fontWeight="bold" fontSize="24px">
+                {tutor.name}
+              </Typography>
+              <img src="/star.svg" alt="star" width={14} height={14} />
+              <Typography fontWeight="bold" fontSize="16px">
+                3.50
+              </Typography>
+              <Typography color="text.secondary" sx={{ fontSize: "16px" }}>
+                (0)
+              </Typography>
+            </Box>
+
+            {/* Divider line */}
+            <Divider sx={styles.divider} />
+
+            <Box display="flex" flexDirection="column" gap={2}>
+              {/* Pricing */}
+              <Typography fontWeight="600" fontSize="20px">
+                Pricing{" "}
+                {tutor.hourly_rate ? `$${tutor.hourly_rate}` : "Not provided"}
+              </Typography>
+
+              {/* Modules */}
+              <Typography fontSize="15px">
+                <Box component="span" fontWeight="bold">
+                  Teaches:
+                </Box>{" "}
+                {tutor.modules_taught}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Bio */}
+        <Box mt={4}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            About {tutor.name}
+          </Typography>
+          <Typography variant="body2">
+            {tutor.bio || "No bio available"}
+          </Typography>
+        </Box>
+
+        {/* Availability */}
+        <Box mt={4}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            Availability
+          </Typography>
+          {tutor.availability?.length > 0 && (
+            <>
+              {tutor.availability.map((slot, idx) => (
+                <Typography variant="body2" key={idx}>
+                  {slot.day}: {slot.start_time} - {slot.end_time}
+                </Typography>
+              ))}
+            </>
+          )}
+        </Box>
+      </Box>
+    </Modal>
   );
 }
 
