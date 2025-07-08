@@ -102,12 +102,10 @@ const Home = () => {
               >
                 <Box display="flex" flex={1} flexDirection="column" gap={1}>
                   <Box display="flex" alignItems="center" gap={0.5}>
-                    <Typography fontWeight="bold" fontSize="18px">
+                    <Typography fontWeight="bold" fontSize="19px">
                       {tutor.name}
                     </Typography>
-                    <Typography fontSize="12px" lineHeight="1" display="inline">
-                      ⭐
-                    </Typography>
+                    <img src="/star.svg" alt="star" width={14} height={14} />
                     <Typography
                       fontWeight="bold"
                       fontSize="14px"
@@ -183,9 +181,7 @@ const Home = () => {
           ))}
         </Stack>
       </Box>
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        {selectedTutorId && <TutorProfile id={selectedTutorId} />}
-      </Dialog>
+      <TutorProfile id={selectedTutorId} open={open} onClose={handleClose} />
     </Box>
   );
 };
