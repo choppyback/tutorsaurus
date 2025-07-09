@@ -85,8 +85,11 @@ export default function BookingInterface({
             borderLeft: "1px solid #eee",
           }}
         >
-          <Typography variant="subtitle1" mb={1} fontWeight="bold">
+          <Typography variant="subtitle1" fontWeight="bold">
             {selectedSlots.length} Slot Selected
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            ⓘ Each slot is a 1-hour block.
           </Typography>
           <Typography variant="body2" mb={2}>
             {selectedDate.format("MMM DD, YYYY")}
