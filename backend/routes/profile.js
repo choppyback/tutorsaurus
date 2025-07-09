@@ -286,7 +286,7 @@ router.put("/", authorize, upload.single("profile_pic"), async (req, res) => {
 
     res.json({ message: "Profile updated successfully" });
   } catch (err) {
-    console.error("Update error:", err.message);
+    process.stdout.write("Update error:", err.message);
     res.status(500).send("Server error");
   }
 });
