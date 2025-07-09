@@ -107,6 +107,7 @@ function TutorProfile({ id, open, onClose }) {
           <BookingInterface
             modules={tutor.modules_taught}
             availability={tutor.availability}
+            hourly_rate={tutor.hourly_rate}
           />
         </Box>
       </Box>
