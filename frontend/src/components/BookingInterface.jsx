@@ -15,20 +15,21 @@ import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-const mockTimeSlots = [];
-
-for (let hour = 7; hour <= 22; hour++) {
-  const formatted = dayjs().hour(hour).minute(0).format("HH:mm");
-  mockTimeSlots.push(formatted);
-}
-
-export default function BookingInterface({ modules }) {
+export default function BookingInterface({ modules, availability }) {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
 
   // Convert modules string to an array
   const moduleOptions = modules ? modules.split(",") : [];
+
+  // Extract time slots based on day selected
+  const selectedDay = selectedDate.format("ddd");
+  const timeSlots = availability
+    ?.filter((entry) => entry.day === selectedDay)
+    .map((entry) => entry.start_time.slice(0, 5));
+
+  console.log(timeSlots);
 
   const toggleSlot = (slot) => {
     setSelectedSlots((prev) =>
@@ -96,7 +97,7 @@ export default function BookingInterface({ modules }) {
           >
             <Grid container spacing={1} direction="row" width="100%">
               <Grid item width={"45%"}>
-                {mockTimeSlots
+                {timeSlots
                   .filter((_, i) => i % 2 === 0)
                   .map((slot) => (
                     <Box
@@ -126,7 +127,7 @@ export default function BookingInterface({ modules }) {
               </Grid>
 
               <Grid item width={"45%"}>
-                {mockTimeSlots
+                {timeSlots
                   .filter((_, i) => i % 2 === 1)
                   .map((slot) => (
                     <Box
