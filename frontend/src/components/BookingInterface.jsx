@@ -15,7 +15,11 @@ import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-export default function BookingInterface({ modules, availability }) {
+export default function BookingInterface({
+  modules,
+  availability,
+  hourly_rate,
+}) {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
@@ -37,7 +41,7 @@ export default function BookingInterface({ modules, availability }) {
     );
   };
 
-  const totalPrice = (selectedSlots.length * 38.75).toFixed(2);
+  const totalPrice = (selectedSlots.length * hourly_rate).toFixed(2);
 
   return (
     <Box
@@ -95,67 +99,81 @@ export default function BookingInterface({ modules, availability }) {
               pr: 1, // optional: prevent scroll bar from overlapping content
             }}
           >
-            <Grid container spacing={1} direction="row" width="100%">
-              <Grid item width={"45%"}>
-                {timeSlots
-                  .filter((_, i) => i % 2 === 0)
-                  .map((slot) => (
-                    <Box
-                      key={slot}
-                      sx={{ display: "flex", justifyContent: "center", mb: 1 }}
-                    >
-                      <Button
-                        fullWidth
-                        onClick={() => toggleSlot(slot)}
+            {timeSlots.length === 0 ? (
+              <Typography color="text.secondary" fontStyle="italic">
+                No time slots available for {selectedDay}.
+              </Typography>
+            ) : (
+              <Grid container spacing={1} direction="row" width="100%">
+                <Grid item width={"45%"}>
+                  {timeSlots
+                    .filter((_, i) => i % 2 === 0)
+                    .map((slot) => (
+                      <Box
+                        key={slot}
                         sx={{
-                          maxWidth: "100%",
-                          borderRadius: 10,
-                          textTransform: "none",
-                          fontWeight: "bold",
-                          color: selectedSlots.includes(slot)
-                            ? "white"
-                            : "black",
-                          backgroundColor: selectedSlots.includes(slot)
-                            ? "#1976d2"
-                            : "#cfd8dc",
+                          display: "flex",
+                          justifyContent: "center",
+                          mb: 1,
                         }}
                       >
-                        {slot}
-                      </Button>
-                    </Box>
-                  ))}
-              </Grid>
+                        <Button
+                          fullWidth
+                          onClick={() => toggleSlot(slot)}
+                          sx={{
+                            maxWidth: "100%",
+                            borderRadius: 10,
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            color: selectedSlots.includes(slot)
+                              ? "white"
+                              : "black",
+                            backgroundColor: selectedSlots.includes(slot)
+                              ? "#1976d2"
+                              : "#cfd8dc",
+                          }}
+                        >
+                          {slot}
+                        </Button>
+                      </Box>
+                    ))}
+                </Grid>
 
-              <Grid item width={"45%"}>
-                {timeSlots
-                  .filter((_, i) => i % 2 === 1)
-                  .map((slot) => (
-                    <Box
-                      key={slot}
-                      sx={{ display: "flex", justifyContent: "center", mb: 1 }}
-                    >
-                      <Button
-                        fullWidth
-                        onClick={() => toggleSlot(slot)}
+                <Grid item width={"45%"}>
+                  {timeSlots
+                    .filter((_, i) => i % 2 === 1)
+                    .map((slot) => (
+                      <Box
+                        key={slot}
                         sx={{
-                          maxWidth: "100%",
-                          borderRadius: 10,
-                          textTransform: "none",
-                          fontWeight: "bold",
-                          color: selectedSlots.includes(slot)
-                            ? "white"
-                            : "black",
-                          backgroundColor: selectedSlots.includes(slot)
-                            ? "#1976d2"
-                            : "#cfd8dc",
+                          display: "flex",
+                          justifyContent: "center",
+                          mb: 1,
                         }}
                       >
-                        {slot}
-                      </Button>
-                    </Box>
-                  ))}
+                        <Button
+                          fullWidth
+                          onClick={() => toggleSlot(slot)}
+                          sx={{
+                            maxWidth: "100%",
+                            borderRadius: 10,
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            color: selectedSlots.includes(slot)
+                              ? "white"
+                              : "black",
+                            backgroundColor: selectedSlots.includes(slot)
+                              ? "#1976d2"
+                              : "#cfd8dc",
+                          }}
+                        >
+                          {slot}
+                        </Button>
+                      </Box>
+                    ))}
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </Box>
           <Divider sx={{ mt: 3, borderColor: "#b0bec5" }} />
 
