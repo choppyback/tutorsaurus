@@ -104,7 +104,7 @@ function TutorProfile({ id, open, onClose }) {
           <Typography variant="h5" fontWeight="bold" gutterBottom>
             Book a slot
           </Typography>
-          <BookingInterface />
+          <BookingInterface modules={tutor.modules_taught} />
         </Box>
       </Box>
     </Modal>
