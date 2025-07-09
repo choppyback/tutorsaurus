@@ -3,6 +3,7 @@ import axios from "axios";
 import BASE_URL from "../../api";
 import { Modal, Box, Typography, Divider } from "@mui/material";
 import styles from "./TutorProfile";
+import BookingInterface from "../../components/BookingInterface";
 
 function TutorProfile({ id, open, onClose }) {
   const [tutor, setTutor] = useState(null);
@@ -34,7 +35,7 @@ function TutorProfile({ id, open, onClose }) {
           width: "50%",
           maxHeight: "90vh",
           overflowY: "auto",
-          bgcolor: "background.paper",
+          bgcolor: "rgb(248, 252, 247)",
           borderRadius: 2,
           boxShadow: 24,
           p: 4,
@@ -101,17 +102,9 @@ function TutorProfile({ id, open, onClose }) {
         {/* Availability */}
         <Box mt={4}>
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            Availability
+            Book a slot
           </Typography>
-          {tutor.availability?.length > 0 && (
-            <>
-              {tutor.availability.map((slot, idx) => (
-                <Typography variant="body2" key={idx}>
-                  {slot.day}: {slot.start_time} - {slot.end_time}
-                </Typography>
-              ))}
-            </>
-          )}
+          <BookingInterface />
         </Box>
       </Box>
     </Modal>
