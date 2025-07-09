@@ -22,10 +22,13 @@ for (let hour = 7; hour <= 22; hour++) {
   mockTimeSlots.push(formatted);
 }
 
-export default function BookingInterface() {
+export default function BookingInterface({ modules }) {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
+
+  // Convert modules string to an array
+  const moduleOptions = modules ? modules.split(",") : [];
 
   const toggleSlot = (slot) => {
     setSelectedSlots((prev) =>
@@ -167,10 +170,11 @@ export default function BookingInterface() {
               fullWidth
               sx={{ backgroundColor: "#fff", borderRadius: 1 }}
             >
-              <MenuItem value="CS2030">CS2030</MenuItem>
-              <MenuItem value="CS2100">CS2100</MenuItem>
-              <MenuItem value="MA1511">MA1511</MenuItem>
-              <MenuItem value="IS1103">IS1103</MenuItem>
+              {moduleOptions.map((mod) => (
+                <MenuItem key={mod} value={mod}>
+                  {mod}
+                </MenuItem>
+              ))}
             </Select>
           </Box>
         </Box>
@@ -179,7 +183,8 @@ export default function BookingInterface() {
       {/* Price and Button */}
       <Box
         display="flex"
-        justifyContent="space-between"
+        justifyContent="center"
+        gap={10}
         alignItems="center"
         width="100%"
         maxWidth={800}
@@ -193,7 +198,7 @@ export default function BookingInterface() {
           size="large"
           sx={{ borderRadius: 3, px: 4 }}
         >
-          Next
+          Book
         </Button>
       </Box>
     </Box>
