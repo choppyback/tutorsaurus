@@ -53,8 +53,18 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
         end_time: end.format("HH:mm:ss"), // e.g. "10:00"
       };
     });
-    setAvailability(formatted);
-    console.log("Selected slots (unformatted):", schedule);
+
+    // Handle duplicates
+    const seen = new Set();
+    const deduped = formatted.filter((slot) => {
+      const key = `${slot.day}-${slot.start_time}-${slot.end_time}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    setAvailability(deduped);
+    console.log("Selected slots (unformatted, with duplicates):", schedule);
   };
 
   return (
