@@ -20,7 +20,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilityPicker from "../../components/AvailabilityPicker";
 import ModuleSelect from "../../components/ModuleSelect";
-import dayjs from "dayjs";
 import styles from "./editprofile";
 
 const faculties = [
@@ -39,7 +38,6 @@ const faculties = [
 
 const genders = ["Male", "Female"];
 const years = [1, 2, 3, 4, 5];
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 function EditProfile() {
   const [userData, setUserData] = useState(null);
@@ -50,34 +48,11 @@ function EditProfile() {
   const [newProfilePic, setNewProfilePic] = useState(null);
   const [modules, setModules] = useState([]);
 
-  const isAvailabilityFilled = () => {
-    for (const day in availability) {
-      const slot = availability[day];
-      if (slot.enabled && (!slot.start || !slot.end)) {
-        alert(`Please provide both start and end time for ${day}.`);
-        return false;
-      }
-    }
-    return true;
-  };
-
   const fetchProfile = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Convert array of slots to ScheduleSelector-compatible dates
-      const availabilitySlots = res.data.availability || [];
-      const base = dayjs("2025-06-30"); // start of the week (Monday)
-      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-      const converted = availabilitySlots;
-
-      const userWithFormattedAvailability = {
-        ...res.data,
-        availability: converted,
-      };
 
       setUserData(res.data);
       setOriginalData(res.data);
@@ -111,8 +86,6 @@ function EditProfile() {
         alert("Please ensure Modules Taught and Hourly Rate are filled in");
         return;
       }
-
-      if (!isAvailabilityFilled()) return;
 
       const formData = new FormData();
       formData.append("name", userData.name);
