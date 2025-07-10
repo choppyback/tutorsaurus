@@ -47,6 +47,7 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
     );
     setSchedule(deduped);
 
+    // Format date object to send to backend
     const formatted = deduped.map((date) => {
       const start = dayjs(date);
       const end = start.add(1, "hour");
@@ -72,7 +73,7 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
       <ScheduleSelector
         selection={schedule}
         numDays={7}
-        minTime={7} // 8:00 AM
+        minTime={7} // 7:00 AM
         maxTime={23} // 11:00 PM
         dateFormat="ddd"
         startDate={new Date("2025-06-29")} // a Sunday
