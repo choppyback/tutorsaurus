@@ -292,6 +292,7 @@ export default function BookingInterface({
           color="error"
           size="large"
           onClick={handleBooking}
+          disabled={selectedSlots.length === 0 || !selectedModule}
           sx={{ borderRadius: 3, px: 4 }}
         >
           Book
