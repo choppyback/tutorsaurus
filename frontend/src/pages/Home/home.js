@@ -36,12 +36,14 @@ const styles = {
     height: "100%",
     bgcolor: "#eee",
   },
-  bookButton: {
+  viewButton: {
     backgroundColor: "#A2CB75",
     color: "#294A29",
     "&:hover": {
       backgroundColor: "#95bd68",
     },
+    fontWeight: "bold",
+    fontSize: "13px",
   },
 };
 
