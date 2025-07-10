@@ -6,14 +6,14 @@ module.exports = async (req, res, next) => {
     const authHeader = req.header("Authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(403).json({ message: "Not Authorized" });
+      return res.status(403).json({ error: "Not Authorized" });
     }
 
     const token = authHeader.split(" ")[1];
 
     const payload = jwt.verify(token, process.env.jwtSecret);
 
-    req.user = payload.user;
+    req.user = payload.user; // this is a user_id
     next();
   } catch (err) {
     console.error(err.message);
