@@ -105,6 +105,7 @@ function TutorProfile({ id, open, onClose }) {
             Book a slot
           </Typography>
           <BookingInterface
+            tutor_id={id}
             modules={tutor.modules_taught}
             availability={tutor.availability}
             hourly_rate={tutor.hourly_rate}
