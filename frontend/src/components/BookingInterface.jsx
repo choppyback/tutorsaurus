@@ -1,6 +1,6 @@
 // BookingInterface.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,26 +14,58 @@ import {
 import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import axios from "axios";
+import BASE_URL from "../api";
 
 export default function BookingInterface({
+  tutor_id,
   modules,
   availability,
   hourly_rate,
 }) {
+  // STATE
+  // ==========================
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
+  const [bookedSlots, setBookedSlots] = useState([]);
+
+  // COMPUTED VALUES
+  // ==========================
 
   // Convert modules string to an array
-  const moduleOptions = modules ? modules.split(",") : [];
+  const moduleOptions = modules ? modules.split(",").map((m) => m.trim()) : [];
 
   // Extract time slots based on day selected
   const selectedDay = selectedDate.format("ddd");
   const timeSlots = availability
     ?.filter((entry) => entry.day === selectedDay)
-    .map((entry) => entry.start_time.slice(0, 5));
+    .map((entry) => entry.start_time.slice(0, 5))
+    .filter((slot) => !bookedSlots.includes(slot));
 
-  console.log(timeSlots);
+  const totalPrice = (selectedSlots.length * hourly_rate).toFixed(2);
+
+  // EVENT HANDLERS
+  // ==========================
+  const fetchBookedSlots = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/bookings/${tutor_id}`, {
+        params: {
+          date: selectedDate.format("YYYY-MM-DD"),
+        },
+      });
+      const slots = res.data.map((b) => b.start_time.slice(0, 5)); // convert to 13:00
+      setBookedSlots(slots);
+    } catch (err) {
+      console.error("Failed to fetch booked slots", err);
+    }
+  };
+
+  useEffect(() => {
+    if (tutor_id && selectedDate) {
+      fetchBookedSlots();
+    }
+  }, [tutor_id, selectedDate]);
 
   const toggleSlot = (slot) => {
     setSelectedSlots((prev) =>
@@ -41,7 +73,48 @@ export default function BookingInterface({
     );
   };
 
-  const totalPrice = (selectedSlots.length * hourly_rate).toFixed(2);
+  const handleBooking = async () => {
+    // Check if all info is selected
+    if (!selectedModule || selectedSlots.length === 0) {
+      alert("Please select a module and at least one time slot.");
+      return;
+    }
+
+    // Get token from localStorage
+    const token = localStorage.getItem("token");
+
+    // Send booking for each time slot
+    try {
+      let lastMessage = "";
+      for (const slot of selectedSlots) {
+        const res = await axios.post(
+          `${BASE_URL}/api/bookings`,
+          {
+            tutor_id,
+            module_code: selectedModule,
+            date: selectedDate.format("YYYY-MM-DD"),
+            start_time: slot,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Get the last response message
+        lastMessage = res.data?.message;
+      }
+
+      alert(lastMessage || "Booking successful!");
+      setSelectedSlots([]); // Clear slots
+      setSelectedModule(""); // Clear module
+      await fetchBookedSlots();
+    } catch (err) {
+      console.error("Booking error:", err);
+      alert("Booking failed: " + (err.response?.data?.message || err.message));
+    }
+  };
 
   return (
     <Box
@@ -218,6 +291,7 @@ export default function BookingInterface({
           variant="contained"
           color="error"
           size="large"
+          onClick={handleBooking}
           sx={{ borderRadius: 3, px: 4 }}
         >
           Book
