@@ -80,6 +80,22 @@ export default function BookingInterface({
       return;
     }
 
+    const confirmMsg =
+      `Confirm booking on ${selectedDate.format("MMM DD, YYYY")}:\n` +
+      selectedSlots
+        .map((slot) => {
+          const start = dayjs(slot, "HH:mm");
+          const end = start.add(1, "hour");
+          return `${slot} - ${end.format("HH:mm")}`;
+        })
+        .join("\n");
+
+    const confirmed = window.confirm(confirmMsg);
+
+    if (!confirmed) {
+      return; // user clicked cancel
+    }
+
     // Get token from localStorage
     const token = localStorage.getItem("token");
 
