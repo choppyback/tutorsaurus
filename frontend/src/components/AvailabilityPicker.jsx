@@ -24,11 +24,11 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
   useEffect(() => {
     if (!Array.isArray(availability) || availability.length === 0) return; // skip below if availability is empty
 
-    const base = dayjs("2025-06-30"); // Treat as Monday
+    const base = dayjs("2025-06-29"); // Base is Sunday
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     const converted = availability.map(({ day, start_time }) => {
-      const [h, m] = start_time.split(":").map(Number);
+      const [h, m] = start_time.split(":").slice(0, 2).map(Number);
       return base
         .day(days.indexOf(day))
         .hour(h)
@@ -37,14 +37,17 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
         .millisecond(0)
         .toDate();
     });
-
+    console.log(converted);
     setSchedule(converted);
   }, []);
 
   const handleChange = (newSlot) => {
-    setSchedule(newSlot);
+    const deduped = Array.from(new Set(newSlot.map((d) => d.getTime()))).map(
+      (t) => new Date(t)
+    );
+    setSchedule(deduped);
 
-    const formatted = newSlot.map((date) => {
+    const formatted = deduped.map((date) => {
       const start = dayjs(date);
       const end = start.add(1, "hour");
       return {
@@ -54,17 +57,8 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
       };
     });
 
-    // Handle duplicates
-    const seen = new Set();
-    const deduped = formatted.filter((slot) => {
-      const key = `${slot.day}-${slot.start_time}-${slot.end_time}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    setAvailability(deduped);
-    console.log("Selected slots (unformatted, with duplicates):", schedule);
+    setAvailability(formatted);
+    console.log("Selected slots (unformatted, with duplicates):", deduped);
   };
 
   return (
@@ -81,7 +75,7 @@ const AvailabilityPicker = ({ availability, setAvailability }) => {
         minTime={7} // 8:00 AM
         maxTime={23} // 11:00 PM
         dateFormat="ddd"
-        startDate={new Date("2025-06-30")} // a Monday
+        startDate={new Date("2025-06-29")} // a Sunday
         onChange={handleChange}
       />
     </div>
