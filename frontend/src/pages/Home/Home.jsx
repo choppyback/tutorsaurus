@@ -152,29 +152,18 @@ const Home = () => {
                       {tutor.bio}...
                     </Typography>
                   </Box>
-                  <Typography
-                    onClick={() => handleOpenProfile(tutor.user_id)}
-                    sx={{
-                      cursor: "pointer",
-                      fontWeight: "bold",
-                      fontSize: "15px",
-                      mt: 2,
-                      textDecoration: "underline",
-                      "&:hover": {
-                        color: "green",
-                      },
-                    }}
-                  >
-                    View profile
-                  </Typography>
                 </Box>
               </Box>
 
               <Box sx={styles.divider} />
 
               <Box display="flex" alignItems="center">
-                <Button variant="contained" sx={styles.bookButton}>
-                  Book now
+                <Button
+                  variant="outlined"
+                  onClick={() => handleOpenProfile(tutor.user_id)}
+                  sx={styles.viewButton}
+                >
+                  View profile
                 </Button>
               </Box>
             </Box>
