@@ -15,7 +15,7 @@ import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
-import BASE_URL from "../api";
+import BASE_URL from "../../config/api";
 
 export default function BookingInterface({
   tutor_id,
