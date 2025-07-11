@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import NavBar from "../../components/NavBar";
-import SearchBar from "../../components/SearchBar";
-import FilterPanel from "../../components/FilterPanel";
-import BASE_URL from "../../api.js";
+import NavBar from "../../../../shared/components/NavBar.jsx";
+import SearchBar from "../../../../shared/components/SearchBar";
+import FilterPanel from "../../../../shared/components/FilterPanel";
+import BASE_URL from "../../../../config/api.js";
 import { Button, Stack, Box, Typography, Dialog } from "@mui/material";
-import TutorProfile from "../TutorProfile/TutorProfile.jsx";
-import styles from "./home";
+import TutorProfile from "../../../tutorProfile/pages/TutorProfile/TutorProfile.jsx";
+import styles from "./home.js";
 
 const Home = () => {
   const [tutors, setTutors] = useState([]);
