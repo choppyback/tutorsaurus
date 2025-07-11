@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../../../shared/components/NavBar";
 import axios from "axios";
-import BASE_URL from "../../api";
+import BASE_URL from "../../../../config/api";
 import {
   Tooltip,
   Box,
@@ -18,8 +18,8 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import AvailabilityPicker from "../../components/AvailabilityPicker";
-import ModuleSelect from "../../components/ModuleSelect";
+import AvailabilityPicker from "../../../../shared/components/AvailabilityPicker";
+import ModuleSelect from "../../../../shared/components/ModuleSelect";
 import styles from "./editprofile";
 
 const faculties = [
