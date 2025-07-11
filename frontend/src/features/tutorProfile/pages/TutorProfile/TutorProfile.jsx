@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../../api";
+import BASE_URL from "../../../../config/api";
 import { Modal, Box, Typography, Divider } from "@mui/material";
 import styles from "./TutorProfile";
-import BookingInterface from "../../components/BookingInterface";
+import BookingInterface from "../../../../shared/components/BookingInterface";
 
 function TutorProfile({ id, open, onClose }) {
   const [tutor, setTutor] = useState(null);
