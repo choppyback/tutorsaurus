@@ -5,7 +5,7 @@ import Landing from "./pages/Landing/Landing.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Home from "./pages/Home/Home.jsx";
 import EditProfile from "./pages/EditProfile/EditProfile.jsx";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./shared/components/ProtectedRoute";
 
 function App() {
   return (
