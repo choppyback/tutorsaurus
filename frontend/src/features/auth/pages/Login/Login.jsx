@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import BASE_URL from "../../api";
+import BASE_URL from "../../../../config/api";
 import styles from "./login";
 
 const Login = () => {
