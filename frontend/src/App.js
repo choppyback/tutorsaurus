@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signup from "./features/auth/pages/Signup/Signup.jsx";
-import Landing from "./shared/pages/Landing/Landing.jsx";
+import Landing from "./features/landing/pages/Landing.jsx";
 import Login from "./features/auth/pages/Login/Login.jsx";
 import Home from "./features/home/pages/Home/Home.jsx";
 import EditProfile from "./features/profile/pages/EditProfile/EditProfile.jsx";
