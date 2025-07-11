@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import BASE_URL from "../../api.js";
-import AvailabilityPicker from "../../components/AvailabilityPicker.jsx";
-import ModuleSelect from "../../components/ModuleSelect.jsx";
+import BASE_URL from "../../../../config/api";
+import AvailabilityPicker from "../../../../shared/components/AvailabilityPicker.jsx";
+import ModuleSelect from "../../../../shared/components/ModuleSelect.jsx";
 import styles from "./signup.js";
 
 const faculties = [
