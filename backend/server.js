@@ -18,6 +18,7 @@ app.use("/auth", require("./routes/auth"));
 app.use("/api/search", require("./routes/search"));
 app.use("/api/profile", require("./routes/profile"));
 app.use("/api/modules", require("./routes/modules"));
+app.use("/api/admin", require('./routes/adminRoutes'))
 
 // troubleshoot for hosting
 app.get("/test-db", async (req, res) => {
