@@ -94,7 +94,7 @@ const signupUser = async (req, res) => {
       }
     }
 
-    const jwtToken = jwtGenerator(userId);
+    const jwtToken = jwtGenerator(userId, role);
     res.json({ jwtToken });
   } catch (err) {
     console.error("Signup error:", err.message);

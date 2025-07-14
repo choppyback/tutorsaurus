@@ -24,7 +24,7 @@ const loginUser = async (req, res) => {
     }
 
     // 4. give them the jwt token
-    const jwtToken = jwtGenerator(user.rows[0].user_id);
+    const jwtToken = jwtGenerator(user.rows[0].user_id, user.rows[0].role);
     res.json({ jwtToken });
   } catch (err) {
     console.error(err.message);
