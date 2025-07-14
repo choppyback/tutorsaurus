@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const pool = require("../db");
-const authorize = require("../middleware/authorize");
+const authenticate = require("../middleware/authenticate");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // GET
-router.get("/", authorize, async (req, res) => {
+router.get("/", authenticate, async (req, res) => {
   try {
     const user_id = req.user;
 
@@ -162,7 +162,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // PUT
-router.put("/", authorize, upload.single("profile_pic"), async (req, res) => {
+router.put("/", authenticate, upload.single("profile_pic"), async (req, res) => {
   try {
     const user_id = req.user;
     const {
