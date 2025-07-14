@@ -7,6 +7,7 @@ import BASE_URL from "../../../../config/api.js";
 import { Button, Stack, Box, Typography, Dialog } from "@mui/material";
 import TutorProfile from "../../../tutorProfile/pages/TutorProfile/TutorProfile.jsx";
 import styles from "./home.js";
+import starIcon from "../../../../assets/images/star.svg";
 
 const Home = () => {
   const [tutors, setTutors] = useState([]);
@@ -105,7 +106,7 @@ const Home = () => {
                     <Typography fontWeight="bold" fontSize="19px">
                       {tutor.name}
                     </Typography>
-                    <img src="/star.svg" alt="star" width={14} height={14} />
+                    <img src={starIcon} alt="star" width={14} height={14} />
                     <Typography
                       fontWeight="bold"
                       fontSize="14px"

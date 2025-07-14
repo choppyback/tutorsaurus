@@ -4,6 +4,7 @@ import BASE_URL from "../../../../config/api";
 import { Modal, Box, Typography, Divider } from "@mui/material";
 import styles from "./TutorProfile";
 import BookingInterface from "../../../../shared/components/BookingInterface";
+import starIcon from "../../../../assets/images/star.svg";
 
 function TutorProfile({ id, open, onClose }) {
   const [tutor, setTutor] = useState(null);
@@ -59,7 +60,7 @@ function TutorProfile({ id, open, onClose }) {
               <Typography fontWeight="bold" fontSize="24px">
                 {tutor.name}
               </Typography>
-              <img src="/star.svg" alt="star" width={14} height={14} />
+              <img src={starIcon} alt="star" width={14} height={14} />
               <Typography fontWeight="bold" fontSize="16px">
                 3.50
               </Typography>
