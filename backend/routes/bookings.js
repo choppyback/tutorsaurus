@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 // Import Middleware
-const authorize = require("../middleware/authorize");
+const authenticate = require("../middleware/authenticate");
 
 // Import Controller
 const createBooking = require("../controllers/bookingController");
@@ -9,8 +9,8 @@ const tutorBookings = require("../controllers/tutorBookingsController");
 const studentBookings = require("../controllers/studentBookingsController");
 
 // Creating booking
-router.post("/", authorize, createBooking);
-router.get("/student", authorize, studentBookings);
+router.post("/", authenticate, createBooking);
+router.get("/student", authenticate, studentBookings);
 router.get("/:id", tutorBookings);
 
 module.exports = router;
