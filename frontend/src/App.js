@@ -5,6 +5,9 @@ import Landing from "./features/landing/pages/Landing.jsx";
 import Login from "./features/auth/pages/Login/Login.jsx";
 import Home from "./features/home/pages/Home/Home.jsx";
 import EditProfile from "./features/profile/pages/EditProfile/EditProfile.jsx";
+import StudentBookingView from "./features/studentBookings/pages/StudentBookingView.jsx";
+import TutorBookingView from "./features/tutorBookings/pages/TutorBookingView.jsx";
+
 import ProtectedRoute from "./shared/components/ProtectedRoute";
 
 function App() {
@@ -27,6 +30,22 @@ function App() {
           element={
             <ProtectedRoute>
               <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/bookings"
+          element={
+            <ProtectedRoute>
+              <StudentBookingView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/bookings"
+          element={
+            <ProtectedRoute>
+              <TutorBookingView />
             </ProtectedRoute>
           }
         />
