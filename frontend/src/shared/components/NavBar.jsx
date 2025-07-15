@@ -1,18 +1,35 @@
-import React from "react";
-import { AppBar, Toolbar, Box, Typography, Button } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import { getBookingsPath } from "../../shared/utils/getBookingsPath";
 
 const NavBar = () => {
   const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
-
-  const location = useLocation();
-
-  const isOnProfilePage = location.pathname === "/editprofile";
 
   return (
     <AppBar
@@ -23,22 +40,16 @@ const NavBar = () => {
         px: 3,
         minHeight: 90,
         justifyContent: "center",
-        mb: 3,
       }}
     >
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Left: Logo + Brand Name */}
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Box
             component="img"
             src="/logo-pure.png"
             alt="Tutorsaurus Logo"
-            sx={{ height: 40, mr: 1 }}
+            sx={{ height: 40 }}
           />
           <Typography
             variant="h6"
@@ -48,44 +59,55 @@ const NavBar = () => {
           </Typography>
         </Box>
 
-        {/* Right: Conditional Navigation Buttons */}
-        <Box sx={{ display: "flex", gap: 2 }}>
-          {isOnProfilePage ? (
-            <Button
-              component={Link}
-              to="/home"
-              sx={{
-                color: "#294A29",
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
-            >
+        {/* Right: Dropdown Menu */}
+        <Box>
+          <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+            onClick={handleMenuClick}
+          >
+            <MenuIcon sx={{ color: "#294A29" }} />
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <MenuItem component={Link} to="/home" onClick={handleMenuClose}>
               Home
-            </Button>
-          ) : (
-            <Button
+            </MenuItem>
+            <MenuItem
               component={Link}
               to="/editprofile"
-              sx={{
-                color: "#294A29",
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
+              onClick={handleMenuClose}
             >
               Profile
-            </Button>
-          )}
-          <Button
-            onClick={handleLogout}
-            variant="outlined"
-            sx={{
-              borderColor: "#A2CB75",
-              color: "#294A29",
-              fontWeight: "bold",
-            }}
-          >
-            Logout
-          </Button>
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to={getBookingsPath()}
+              onClick={handleMenuClose}
+            >
+              My Bookings
+            </MenuItem>
+            <MenuItem
+              sx={{
+                borderColor: "#A2CB75",
+                color: "#294A29",
+                fontWeight: "bold",
+              }}
+              onClick={() => {
+                handleLogout();
+                handleMenuClose();
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>
