@@ -9,6 +9,7 @@ import StudentBookingView from "./features/studentBookings/pages/StudentBookingV
 import TutorBookingView from "./features/tutorBookings/pages/TutorBookingView.jsx";
 
 import ProtectedRoute from "./shared/components/ProtectedRoute";
+import AdminDashboard from "./pages/Admin/AdminDashboard.js";
 
 function App() {
   return (
@@ -17,11 +18,12 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+
         <Route
-          path="/home"
+          path="/admin"
           element={
             <ProtectedRoute>
-              <Home />
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const router = express.Router();
 const {
   getAllUsers,
@@ -8,7 +8,6 @@ const {
   createUser,
 } = require("../controllers/adminController");
 
-//check this part
 const { authenticate } = require("../middleware/authenticate");
 const { authorizeRole } = require("../middleware/authorizeRole");
 
