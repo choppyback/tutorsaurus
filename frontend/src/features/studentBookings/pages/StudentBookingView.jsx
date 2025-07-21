@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import BASE_URL from "../../../config/api";
 import { formatDate } from "../../../shared/utils/formatDate";
+import { useCancelBooking } from "../hooks/useCancelBooking";
 import NavBar from "../../../shared/components/NavBar";
 
 import styles from "./StudentBookingView";
@@ -17,6 +18,7 @@ export default function StudentBookingView() {
   const token = localStorage.getItem("token");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const handleCancel = useCancelBooking(token, setBookings);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -109,12 +111,12 @@ export default function StudentBookingView() {
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Button
                       variant="outlined"
-                      sx={styles.viewButton}
-                      onClick={() =>
-                        alert(`Viewing booking #${booking.booking_id}`)
-                      }
+                      color="error"
+                      ç
+                      sx={styles.cancelButton}
+                      onClick={handleCancel}
                     >
-                      View Details
+                      Cancel
                     </Button>
                   </Box>
                 </Box>
