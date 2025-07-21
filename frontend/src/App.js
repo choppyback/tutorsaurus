@@ -5,7 +5,7 @@ import Landing from "./features/landing/pages/Landing.jsx";
 import Login from "./features/auth/pages/Login/Login.jsx";
 import Home from "./features/home/pages/Home/Home.jsx";
 import EditProfile from "./features/profile/pages/EditProfile/EditProfile.jsx";
-import StudentBookingView from "./features/studentBookings/pages/StudentBookingView.jsx";
+import StudentBookingView from "./features/viewBookings/pages/StudentBookingView.jsx";
 import TutorBookingView from "./features/tutorBookings/pages/TutorBookingView.jsx";
 import AdminDashboard from "./features/adminDashboard/pages/AdminDashboard.jsx";
 
