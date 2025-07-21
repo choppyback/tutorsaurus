@@ -292,6 +292,9 @@ const AdminDashboard = () => {
                     onChange={handleChange}
                     required
                   >
+                    <MenuItem value="">
+                      <em>Select Faculty</em>
+                    </MenuItem>
                     {faculties.map((f, idx) => (
                       <MenuItem key={idx} value={f}>
                         {f}
