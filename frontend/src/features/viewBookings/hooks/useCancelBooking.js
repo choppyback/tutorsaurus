@@ -11,7 +11,7 @@ export const useCancelBooking = (token, setBookings) => {
 
       try {
         await cancelBooking(bookingId, token);
-        setBookings((prev) => prev.filter((b) => b.booking_id !== bookingId));
+        //setBookings((prev) => prev.filter((b) => b.booking_id !== bookingId));
         alert("Booking cancelled successfully.");
       } catch (err) {
         console.error("Failed to cancel booking", err);
