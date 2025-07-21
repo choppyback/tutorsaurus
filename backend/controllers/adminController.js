@@ -43,9 +43,11 @@ const createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
+    const safeYear = year_of_study === "" ? null : year_of_study;
+
     const { rows } = await pool.query(
       "INSERT INTO users (name, email, password, role, gender, year_of_study, faculty) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING user_id, name, email, role",
-      [name, email, bcryptPassword, role, gender, year_of_study, faculty]
+      [name, email, bcryptPassword, role, gender, safeYear, faculty]
     );
 
     res.status(201).json(rows[0]);
