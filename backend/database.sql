@@ -71,7 +71,7 @@ CREATE TABLE bookings (
   date DATE NOT NULL,
   start_time TIME NOT NULL,
   end_time TIME NOT NULL,
-  status TEXT DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled', 'completed')),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled', 'completed'))
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(tutor_id, date, start_time)  -- prevent double booking
 );
