@@ -7,9 +7,9 @@ import Home from "./features/home/pages/Home/Home.jsx";
 import EditProfile from "./features/profile/pages/EditProfile/EditProfile.jsx";
 import StudentBookingView from "./features/studentBookings/pages/StudentBookingView.jsx";
 import TutorBookingView from "./features/tutorBookings/pages/TutorBookingView.jsx";
+import AdminDashboard from "./features/adminDashboard/pages/AdminDashboard.jsx";
 
 import ProtectedRoute from "./shared/components/ProtectedRoute";
-import AdminDashboard from "./pages/Admin/AdminDashboard.js";
 
 function App() {
   return (
