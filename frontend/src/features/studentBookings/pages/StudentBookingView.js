@@ -24,11 +24,11 @@ const styles = {
     height: "100%",
     bgcolor: "#eee",
   },
-  viewButton: {
-    backgroundColor: "#A2CB75",
-    color: "#294A29",
+  cancelButton: {
+    backgroundColor: "#e13a2eff",
+    color: "#FFFFFF",
     "&:hover": {
-      backgroundColor: "#95bd68",
+      backgroundColor: "#b03030ff",
     },
     fontWeight: "bold",
     fontSize: "13px",
