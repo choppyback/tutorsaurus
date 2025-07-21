@@ -5,6 +5,7 @@ import axios from "axios";
 import serverBaseURL from "../../../config/api";
 import NavBar from "../../../shared/components/NavBar";
 import styles from "./AdminDashboard.js";
+import { getRoleFromToken } from "../../../shared/utils/getRoleFromToken";
 import {
   Stack,
   Box,
@@ -154,7 +155,7 @@ const AdminDashboard = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar role={getRoleFromToken()} />
       <Box sx={styles.page}>
         <h1>Admin Dashboard</h1>
         <Button

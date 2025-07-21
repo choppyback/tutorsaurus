@@ -4,8 +4,9 @@ import NavBar from "../../../../shared/components/NavBar.jsx";
 import SearchBar from "../../../../shared/components/SearchBar";
 import FilterPanel from "../../../../shared/components/FilterPanel";
 import BASE_URL from "../../../../config/api.js";
-import { Button, Stack, Box, Typography, Dialog } from "@mui/material";
+import { Button, Stack, Box, Typography } from "@mui/material";
 import TutorProfile from "../../../tutorProfile/pages/TutorProfile/TutorProfile.jsx";
+import { getRoleFromToken } from "../../../../shared/utils/getRoleFromToken";
 import styles from "./home.js";
 import starIcon from "../../../../assets/images/star.svg";
 
@@ -66,7 +67,7 @@ const Home = () => {
 
   return (
     <Box sx={styles.page}>
-      <NavBar />
+      <NavBar role={getRoleFromToken()} />
       <SearchBar onSearch={handleSearch} />
 
       <Box sx={{ px: "90px", pt: 2 }}>

@@ -20,6 +20,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilityPicker from "../../../../shared/components/AvailabilityPicker";
 import ModuleSelect from "../../../../shared/components/ModuleSelect";
+import { getRoleFromToken } from "../../../../shared/utils/getRoleFromToken";
 import styles from "./editprofile";
 
 const faculties = [
@@ -126,7 +127,7 @@ function EditProfile() {
   if (!userData) {
     return (
       <Box sx={styles.page}>
-        <NavBar />
+        <NavBar role={getRoleFromToken()} />
         <Box sx={styles.container}>
           <Typography variant="h5">Loading....</Typography>
         </Box>
@@ -155,7 +156,7 @@ function EditProfile() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={styles.page}>
-        <NavBar />
+        <NavBar role={getRoleFromToken()} />
         <Box sx={styles.container}>
           <Typography variant="h4" sx={styles.title}>
             Edit Profile
