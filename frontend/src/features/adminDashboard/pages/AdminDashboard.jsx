@@ -6,6 +6,7 @@ import serverBaseURL from "../../../config/api";
 import NavBar from "../../../shared/components/NavBar";
 import styles from "./AdminDashboard.js";
 import {
+  Stack,
   Box,
   Table,
   TableBody,
@@ -25,6 +26,20 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+
+const faculties = [
+  "Arts and Social Sciences",
+  "Business",
+  "Computing",
+  "Dentistry",
+  "Design and Engineering",
+  "Law",
+  "Medicine",
+  "Science",
+  "Music",
+  "Public Health",
+  "Public Policy",
+];
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -195,76 +210,96 @@ const AdminDashboard = () => {
           </DialogTitle>
           <DialogContent>
             <form onSubmit={handleSubmit}>
-              <TextField
-                margin="dense"
-                name="name"
-                label="Name"
-                type="text"
-                fullWidth
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <TextField
-                margin="dense"
-                name="email"
-                label="Email"
-                type="email"
-                fullWidth
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-              <TextField
-                margin="dense"
-                name="password"
-                label="Password"
-                type="password"
-                fullWidth
-                value={formData.password}
-                onChange={handleChange}
-                required={!currentUser}
-              />
-              <FormControl fullWidth margin="dense">
-                <InputLabel>Role</InputLabel>
-                <Select
-                  name="role"
-                  value={formData.role}
+              <Stack spacing={2} sx={{ width: "550px" }}>
+                <TextField
+                  margin="dense"
+                  name="name"
+                  label="Name"
+                  type="text"
+                  fullWidth
+                  value={formData.name}
                   onChange={handleChange}
                   required
-                >
-                  <MenuItem value="student">Student</MenuItem>
-                  <MenuItem value="tutor">Tutor</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                margin="dense"
-                name="gender"
-                label="Gender"
-                type="text"
-                fullWidth
-                value={formData.gender}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="dense"
-                name="year_of_study"
-                label="Year of Study"
-                type="number"
-                fullWidth
-                value={formData.year_of_study}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="dense"
-                name="faculty"
-                label="Faculty"
-                type="text"
-                fullWidth
-                value={formData.faculty}
-                onChange={handleChange}
-              />
+                />
+                <TextField
+                  margin="dense"
+                  name="email"
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+                <TextField
+                  margin="dense"
+                  name="password"
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  value={formData.password}
+                  onChange={handleChange}
+                  required={!currentUser}
+                />
+                <FormControl fullWidth>
+                  <InputLabel>Role</InputLabel>
+                  <Select
+                    label="Role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    required
+                  >
+                    <MenuItem value="student">Student</MenuItem>
+                    <MenuItem value="tutor">Tutor</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  margin="dense"
+                  name="gender"
+                  label="Gender"
+                  type="text"
+                  fullWidth
+                  value={formData.gender}
+                  onChange={handleChange}
+                />
+                <FormControl fullWidth>
+                  <InputLabel>Year of Study</InputLabel>
+                  <Select
+                    label="Year of Study"
+                    name="year_of_study"
+                    value={formData.year_of_study}
+                    onChange={handleChange}
+                    required
+                  >
+                    <MenuItem value="">
+                      <em>Select Year</em>
+                    </MenuItem>
+                    {[1, 2, 3, 4, 5].map((year) => (
+                      <MenuItem key={year} value={year}>
+                        Year {year}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel>Faculty</InputLabel>
+                  <Select
+                    label="Faculty"
+                    name="faculty"
+                    value={formData.faculty}
+                    onChange={handleChange}
+                    required
+                  >
+                    {faculties.map((f, idx) => (
+                      <MenuItem key={idx} value={f}>
+                        {f}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
             </form>
           </DialogContent>
           <DialogActions>
