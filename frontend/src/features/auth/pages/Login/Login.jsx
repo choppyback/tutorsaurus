@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
+import { getRoleFromToken } from "../../../../shared/utils/getRoleFromToken";
 import BASE_URL from "../../../../config/api";
 import styles from "./login";
 
@@ -20,9 +21,16 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(`${BASE_URL}/auth/login`, inputs);
-      alert("Login successful! Token: " + res.data.jwtToken);
+      // alert("Login successful! Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
-      navigate("/home");
+
+      const role = getRoleFromToken(res.data.jwtToken);
+
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     } catch (err) {
       alert(err.response?.data || "Login failed");
     }
