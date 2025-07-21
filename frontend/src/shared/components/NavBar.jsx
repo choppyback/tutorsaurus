@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { getBookingsPath } from "../../shared/utils/getBookingsPath";
 
-const NavBar = () => {
+const NavBar = ({ role }) => {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -94,6 +94,11 @@ const NavBar = () => {
             >
               My Bookings
             </MenuItem>
+            {role === "admin" && (
+              <MenuItem component={Link} to="/admin" onClick={handleMenuClose}>
+                Admin Dashboard
+              </MenuItem>
+            )}
             <MenuItem
               sx={{
                 borderColor: "#A2CB75",
