@@ -114,7 +114,7 @@ export default function StudentBookingView() {
                       color="error"
                       ç
                       sx={styles.cancelButton}
-                      onClick={handleCancel}
+                      onClick={() => handleCancel(booking.booking_id)}
                     >
                       Cancel
                     </Button>
