@@ -12,7 +12,7 @@ import { useConfirmBooking } from "../hooks/useConfirmBooking";
 import { useCompletedBooking } from "../hooks/useCompletedBooking";
 
 // STYLES
-import styles from "./StudentBookingView";
+import styles from "./TutorBookingView";
 
 export default function TutorBookingView() {
   const fetchBookings = async () => {
@@ -65,6 +65,7 @@ export default function TutorBookingView() {
               {filteredBookings.map((booking) => (
                 <BookingCard
                   booking={booking}
+                  userRole="tutor"
                   onCancel={handleCancel}
                   onConfirm={handleConfirm}
                   onComplete={handleComplete}
