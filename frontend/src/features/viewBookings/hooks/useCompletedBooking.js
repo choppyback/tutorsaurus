@@ -1,19 +1,12 @@
 import { useCallback } from "react";
-import axios from "axios";
-import BASE_URL from "../../../config/api";
+import { completeBooking } from "../api/completeBooking";
 
 export const useCompletedBooking = (token, fetchBookings) => {
-  const completedBooking = useCallback(
+  const handleCompleted = useCallback(
     async (bookingId) => {
       try {
-        await axios.patch(
-          `${BASE_URL}/api/bookings/${bookingId}/complete`,
-          null,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        alert("Booking completed.");
+        const res = await completeBooking(bookingId, token);
+        alert(res.message);
         // Refetch bookings to update new state
         fetchBookings();
       } catch (err) {
@@ -23,5 +16,5 @@ export const useCompletedBooking = (token, fetchBookings) => {
     [token, fetchBookings]
   );
 
-  return completedBooking;
+  return handleCompleted;
 };
