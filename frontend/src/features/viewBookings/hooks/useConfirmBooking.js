@@ -1,20 +1,12 @@
 import { useCallback } from "react";
-import axios from "axios";
-import BASE_URL from "../../../config/api";
+import { confirmBooking } from "../api/confirmBooking";
 
 export const useConfirmBooking = (token, fetchBookings) => {
-  const confirmBooking = useCallback(
+  const handleConfrim = useCallback(
     async (bookingId) => {
       try {
-        const res = await axios.patch(
-          `${BASE_URL}/api/bookings/${bookingId}/confirm`,
-          null,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        alert("Booking confirmed successfully.");
+        const res = await confirmBooking(bookingId, token);
+        alert(res.message);
         // Refetch bookings to update new state
         fetchBookings();
       } catch (err) {
@@ -24,5 +16,5 @@ export const useConfirmBooking = (token, fetchBookings) => {
     [token, fetchBookings]
   );
 
-  return confirmBooking;
+  return handleConfrim;
 };
