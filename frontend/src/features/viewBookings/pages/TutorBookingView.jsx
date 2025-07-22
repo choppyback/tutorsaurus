@@ -9,6 +9,7 @@ import BookingCard from "../components/BookingCard";
 // HOOKS
 import { useCancelBooking } from "../hooks/useCancelBooking";
 import { useConfirmBooking } from "../hooks/useConfirmBooking";
+import { useCompletedBooking } from "../hooks/useCompletedBooking";
 
 // STYLES
 import styles from "./StudentBookingView";
@@ -35,8 +36,9 @@ export default function TutorBookingView() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
-  const handleCancel = useCancelBooking(token, setBookings);
+  const handleCancel = useCancelBooking(token, fetchBookings);
   const handleConfirm = useConfirmBooking(token, fetchBookings);
+  const handleComplete = useCompletedBooking(token, fetchBookings);
 
   const filteredBookings =
     activeFilter === "all"
@@ -65,7 +67,7 @@ export default function TutorBookingView() {
                   booking={booking}
                   onCancel={handleCancel}
                   onConfirm={handleConfirm}
-                  // onComplete={handleComplete}
+                  onComplete={handleComplete}
                 />
               ))}
             </Stack>
