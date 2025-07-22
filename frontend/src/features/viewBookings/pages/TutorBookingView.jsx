@@ -14,29 +14,29 @@ import { useConfirmBooking } from "../hooks/useConfirmBooking";
 import styles from "./StudentBookingView";
 
 export default function TutorBookingView() {
+  const fetchBookings = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/bookings/tutor/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBookings(res.data);
+    } catch (err) {
+      console.error("Failed to fetch bookings", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
   const token = localStorage.getItem("token");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
   const handleCancel = useCancelBooking(token, setBookings);
-  const handleConfirm = useConfirmBooking(token, setBookings);
-
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/bookings/tutor/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setBookings(res.data);
-      } catch (err) {
-        console.error("Failed to fetch bookings", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookings();
-  }, []);
+  const handleConfirm = useConfirmBooking(token, fetchBookings);
 
   const filteredBookings =
     activeFilter === "all"
