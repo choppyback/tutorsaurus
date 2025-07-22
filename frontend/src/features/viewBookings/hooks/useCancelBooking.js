@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { cancelBooking } from "../api/cancelBooking";
 
-export const useCancelBooking = (token, setBookings) => {
+export const useCancelBooking = (token, fetchBookings) => {
   const handleCancel = useCallback(
     async (bookingId) => {
       const confirmCancel = window.confirm(
@@ -10,15 +10,15 @@ export const useCancelBooking = (token, setBookings) => {
       if (!confirmCancel) return;
 
       try {
-        await cancelBooking(bookingId, token);
-        //setBookings((prev) => prev.filter((b) => b.booking_id !== bookingId));
-        alert("Booking cancelled successfully.");
+        const res = await cancelBooking(bookingId, token);
+        fetchBookings();
+        alert(res.message);
       } catch (err) {
         console.error("Failed to cancel booking", err);
         alert("Failed to cancel booking. Please try again.");
       }
     },
-    [token, setBookings]
+    [token, fetchBookings]
   );
 
   return handleCancel;
