@@ -1,7 +1,7 @@
 import axios from "axios";
 import BASE_URL from "../../../config/api";
 
-export const useConfirmBooking = (token, setBookings) => {
+export const useConfirmBooking = (token, fetchBookings) => {
   const confirmBooking = async (bookingId) => {
     try {
       const res = await axios.patch(
@@ -12,14 +12,8 @@ export const useConfirmBooking = (token, setBookings) => {
         }
       );
 
-      // Update local booking list with new status
-      setBookings((prev) =>
-        prev.map((b) =>
-          b.booking_id === bookingId ? { ...b, status: "confirmed" } : b
-        )
-      );
-
       alert("Booking confirmed successfully.");
+      fetchBookings();
     } catch (err) {
       console.error("Failed to confirm booking", err);
     }
