@@ -15,27 +15,27 @@ import NavBar from "../../../shared/components/NavBar";
 import styles from "./StudentBookingView";
 
 export default function StudentBookingView() {
+  const fetchBookings = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/bookings/student/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBookings(res.data);
+    } catch (err) {
+      console.error("Failed to fetch bookings", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
   const token = localStorage.getItem("token");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const handleCancel = useCancelBooking(token, setBookings);
-
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/bookings/student/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setBookings(res.data);
-      } catch (err) {
-        console.error("Failed to fetch bookings", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookings();
-  }, []);
+  const handleCancel = useCancelBooking(token, fetchBookings);
 
   return (
     <>
