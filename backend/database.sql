@@ -37,6 +37,7 @@ CREATE TABLE tutor_modules (
 -- RATINGS TABLE
 CREATE TABLE ratings (
   rating_id SERIAL PRIMARY KEY,
+  booking_id INTEGER UNIQUE REFERENCES bookings(booking_id) ON DELETE CASCADE,
   user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
   rater_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
   score INTEGER CHECK (score >= 1 AND score <= 5),
@@ -46,6 +47,7 @@ CREATE TABLE ratings (
 -- REVIEWS TABLE
 CREATE TABLE reviews (
   review_id SERIAL PRIMARY KEY,
+  booking_id INTEGER UNIQUE REFERENCES bookings(booking_id) ON DELETE CASCADE,
   user_id INTEGER REFERENCES tutors(user_id) ON DELETE CASCADE,
   reviewer_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
   review TEXT NOT NULL,
@@ -59,7 +61,7 @@ CREATE TABLE availability (
   start_time TIME,
   end_time TIME,
   PRIMARY KEY (user_id, day, start_time)
-  check(end_time > start_time)
+  CHECK(end_time > start_time)
 );
 
 -- BOOKINGS TABLE
