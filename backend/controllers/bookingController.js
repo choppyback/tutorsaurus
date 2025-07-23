@@ -2,6 +2,8 @@ const pool = require("../db");
 const { getModuleIdByCode } = require("../utils/moduleConverter");
 
 const bookingController = async (req, res) => {
+  const client = await pool.connect();
+
   try {
     const { tutor_id, module_code, date, start_time } = req.body;
     const student_id = req.user;
@@ -19,32 +21,40 @@ const bookingController = async (req, res) => {
     end.setHours(+hour + 1, +min, 0);
     const end_time = end.toTimeString().split(" ")[0].slice(0, 5) + ":00";
 
-    // Check for double booking
-    const conflict = await pool.query(
+    // Begin transaction
+    await client.query("BEGIN");
+
+    // Lock active bookings with same tutor/date/start_time
+    const conflict = await client.query(
       `SELECT * FROM bookings 
-       WHERE tutor_id = $1 AND date = $2 AND start_time = $3`,
+       WHERE tutor_id = $1 AND date = $2 AND start_time = $3 AND status != 'cancelled'
+       FOR UPDATE`,
       [tutor_id, date, start_time]
     );
+
     if (conflict.rows.length > 0) {
-      return res
-        .status(409)
-        .json({
-          message: "Oops! That slot is taken. Please choose another one.",
-        });
+      await client.query("ROLLBACK");
+      return res.status(409).json({
+        message: "Oops! That slot is already booked.",
+      });
     }
 
-    // Insert into bookings
-    await pool.query(
+    // Insert new booking
+    await client.query(
       `INSERT INTO bookings 
-       (tutor_id, student_id, module_id, date, start_time, end_time) 
-       VALUES ($1, $2, $3, $4, $5, $6)`,
+       (tutor_id, student_id, module_id, date, start_time, end_time, status) 
+       VALUES ($1, $2, $3, $4, $5, $6, 'pending')`,
       [tutor_id, student_id, module_id, date, start_time, end_time]
     );
 
+    await client.query("COMMIT");
     res.status(201).json({ message: "Booking confirmed" });
   } catch (err) {
-    process.stdout.write("error:", err.message);
+    await client.query("ROLLBACK");
+    console.error("Booking error:", err.message);
     res.status(500).json({ message: "Server error" });
+  } finally {
+    client.release();
   }
 };
 
