@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 export default function ReviewDialog({
   open,
   booking,
+  nameToDisplay,
   onClose,
   onSubmit,
   readOnly = false,
@@ -58,8 +59,8 @@ export default function ReviewDialog({
         }}
       >
         <DialogTitle sx={{ fontWeight: "bold", fontSize: 20, mb: 1, px: 0 }}>
-          {readOnly ? "Review for" : "Leave a Review for"}{" "}
-          <strong>{booking?.tutor_name}</strong>
+          {readOnly ? "Review from" : "Leave a Review for"}{" "}
+          <strong>{nameToDisplay}</strong>
         </DialogTitle>
 
         <DialogContent sx={{ px: 0 }}>
