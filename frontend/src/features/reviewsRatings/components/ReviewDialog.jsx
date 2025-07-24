@@ -58,7 +58,7 @@ export default function ReviewDialog({
         }}
       >
         <DialogTitle sx={{ fontWeight: "bold", fontSize: 20, mb: 1, px: 0 }}>
-          {readOnly ? "Your Review for" : "Leave a Review for"}{" "}
+          {readOnly ? "Review for" : "Leave a Review for"}{" "}
           <strong>{booking?.tutor_name}</strong>
         </DialogTitle>
 
