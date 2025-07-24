@@ -5,11 +5,13 @@ import BASE_URL from "../../../config/api";
 import NavBar from "../../../shared/components/NavBar";
 import StatusFilter from "../components/StatusFilter";
 import BookingCard from "../components/BookingCard";
+import ReviewDialog from "../../reviewsRatings/components/ReviewDialog";
 
 // HOOKS
 import { useCancelBooking } from "../hooks/useCancelBooking";
 import { useConfirmBooking } from "../hooks/useConfirmBooking";
 import { useCompletedBooking } from "../hooks/useCompletedBooking";
+import { useViewReview } from "../../reviewsRatings/hooks/useViewReview";
 
 // STYLES
 import styles from "./TutorBookingView";
@@ -39,6 +41,28 @@ export default function TutorBookingView() {
   const handleCancel = useCancelBooking(token, fetchBookings);
   const handleConfirm = useConfirmBooking(token, fetchBookings);
   const handleComplete = useCompletedBooking(token, fetchBookings);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [review, setReview] = useState(null);
+  const fetchReview = useViewReview(token);
+
+  const handleViewReview = async (booking) => {
+    setSelectedBooking(booking);
+    console.log("Fetched bookings:", booking);
+    setDialogOpen(true);
+    setReviewLoading(true);
+    setReviewError(null);
+
+    try {
+      const data = await fetchReview(booking.booking_id);
+      setReview(data);
+    } catch (err) {
+      console.error("Failed to fetch review:", err);
+      setReviewError("Failed to load review.");
+    } finally {
+      setReviewLoading(false);
+    }
+  };
 
   const filteredBookings =
     activeFilter === "all"
@@ -69,11 +93,22 @@ export default function TutorBookingView() {
                   onCancel={handleCancel}
                   onConfirm={handleConfirm}
                   onComplete={handleComplete}
+                  onReview={handleViewReview}
                 />
               ))}
             </Stack>
           )}
         </Box>
+        {selectedBooking && (
+          <ReviewDialog
+            open={dialogOpen}
+            onClose={() => setDialogOpen(false)}
+            booking={selectedBooking}
+            readOnly="true"
+            initialRating={review?.score || 0}
+            initialComment={review?.review || ""}
+          />
+        )}
       </Box>
     </>
   );
