@@ -8,6 +8,7 @@ export default function BookingCard({
   onCancel,
   onConfirm,
   onComplete,
+  onReview,
 }) {
   const statusColor =
     booking.status === "confirmed" || booking.status === "completed"
@@ -64,39 +65,10 @@ export default function BookingCard({
             onCancel={onCancel}
             onConfirm={onConfirm}
             onComplete={onComplete}
+            onReview={onReview}
           />
         </Box>
       </Box>
     </Box>
   );
 }
-
-const actionButtonStyles = {
-  red: {
-    backgroundColor: "#e13a2eff",
-    color: "#FFFFFF",
-    "&:hover": {
-      backgroundColor: "#b03030ff",
-    },
-    fontWeight: "bold",
-    fontSize: "13px",
-  },
-  blue: {
-    backgroundColor: "#3a86e1ff",
-    color: "#FFFFFF",
-    "&:hover": {
-      backgroundColor: "#2a6db0ff",
-    },
-    fontWeight: "bold",
-    fontSize: "13px",
-  },
-  green: {
-    backgroundColor: "#4caf50",
-    color: "#FFFFFF",
-    "&:hover": {
-      backgroundColor: "#388e3c",
-    },
-    fontWeight: "bold",
-    fontSize: "13px",
-  },
-};
