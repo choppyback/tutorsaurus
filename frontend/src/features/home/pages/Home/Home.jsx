@@ -113,13 +113,13 @@ const Home = () => {
                       fontSize="14px"
                       lineHeight="1"
                     >
-                      3.50
+                      {tutor.rating ? tutor.rating : "N/A"}
                     </Typography>
                     <Typography
                       color="text.secondary"
-                      sx={{ fontSize: "14px", lineHeight: 1 }}
+                      sx={{ fontSize: "14px" }}
                     >
-                      (0)
+                      ({tutor.review_count || 0})
                     </Typography>
                   </Box>
 
