@@ -5,15 +5,34 @@ import BASE_URL from "../../../config/api";
 import NavBar from "../../../shared/components/NavBar";
 import StatusFilter from "../components/StatusFilter";
 import BookingCard from "../components/BookingCard";
+import ReviewDialog from "../../reviewsRatings/components/ReviewDialog";
 
 // HOOKS
 import { useCancelBooking } from "../hooks/useCancelBooking";
+import { useLeaveReview } from "../../reviewsRatings/hooks/useLeaveReview";
 
 // STYLES
 import styles from "./StudentBookingView";
 
 export default function StudentBookingView() {
-  const fetchBookings = async () => {
+  // STATE
+  // ==========================
+  const token = localStorage.getItem("token");
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState("all");
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
+  // HOOKS
+  // ==========================
+  const handleCancel = useCancelBooking(token, fetchBookings);
+  const { leaveReview } = useLeaveReview(token, fetchBookings); // renamed to match naming style
+
+  // EVENT HANDLERS
+  // ==========================
+  async function fetchBookings() {
     try {
       const res = await axios.get(`${BASE_URL}/api/bookings/student/`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -24,18 +43,21 @@ export default function StudentBookingView() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
+  function handleOpenReviewDialog(booking) {
+    setSelectedBooking(booking);
+    setDialogOpen(true);
+  }
+
+  // EFFECTS
+  // ==========================
   useEffect(() => {
     fetchBookings();
   }, []);
 
-  const token = localStorage.getItem("token");
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("all");
-  const handleCancel = useCancelBooking(token, fetchBookings);
-
+  // COMPUTED
+  // ==========================
   const filteredBookings =
     activeFilter === "all"
       ? bookings
@@ -60,13 +82,23 @@ export default function StudentBookingView() {
             <Stack spacing={3}>
               {filteredBookings.map((booking) => (
                 <BookingCard
+                  key={booking.booking_id}
                   booking={booking}
                   userRole="student"
                   onCancel={handleCancel}
+                  onReview={handleOpenReviewDialog}
                 />
               ))}
             </Stack>
           )}
+
+          <ReviewDialog
+            open={dialogOpen}
+            booking={selectedBooking}
+            onClose={() => setDialogOpen(false)}
+            onSubmit={leaveReview}
+            readOnly={false}
+          />
         </Box>
       </Box>
     </>
