@@ -13,25 +13,26 @@ import { useConfirmBooking } from "../hooks/useConfirmBooking";
 import { useCompletedBooking } from "../hooks/useCompletedBooking";
 import { useViewReview } from "../../reviewsRatings/hooks/useViewReview";
 
+// API
+import { fetchBookings } from "../api/fetchBooking";
+
 // STYLES
 import styles from "./TutorBookingView";
 
 export default function TutorBookingView() {
-  const fetchBookings = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/bookings/tutor/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setBookings(res.data);
-    } catch (err) {
-      console.error("Failed to fetch bookings", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchBookings();
+    const loadBookings = async () => {
+      try {
+        const data = await fetchBookings("tutor", token);
+        setBookings(data);
+      } catch (err) {
+        console.error("Failed to fetch bookings", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBookings();
   }, []);
 
   const token = localStorage.getItem("token");
@@ -50,17 +51,12 @@ export default function TutorBookingView() {
     setSelectedBooking(booking);
     console.log("Fetched bookings:", booking);
     setDialogOpen(true);
-    setReviewLoading(true);
-    setReviewError(null);
 
     try {
       const data = await fetchReview(booking.booking_id);
       setReview(data);
     } catch (err) {
       console.error("Failed to fetch review:", err);
-      setReviewError("Failed to load review.");
-    } finally {
-      setReviewLoading(false);
     }
   };
 
@@ -103,10 +99,10 @@ export default function TutorBookingView() {
           <ReviewDialog
             open={dialogOpen}
             onClose={() => setDialogOpen(false)}
-            booking={selectedBooking}
-            readOnly="true"
-            initialRating={review?.score || 0}
-            initialComment={review?.review || ""}
+            nameToDisplay={selectedBooking.student_name}
+            readOnly={true}
+            initialRating={review?.score}
+            initialComment={review?.review}
           />
         )}
       </Box>
