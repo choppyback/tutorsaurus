@@ -15,10 +15,15 @@ const tutorBookingsController = async (req, res) => {
         b.start_time,
         b.end_time,
         b.status,
-        s.name AS student_name
+        s.name AS student_name,
+        t.name AS tutor_name,
+        EXISTS (
+          SELECT 1 FROM reviews r WHERE r.booking_id = b.booking_id
+        ) AS has_reviewed
       FROM bookings b
       JOIN users s ON s.user_id = b.student_id
       JOIN modules m ON m.module_id = b.module_id
+      JOIN users t ON t.user_id = b.tutor_id
       WHERE b.tutor_id = $1
       ORDER BY b.date ASC, b.start_time ASC
       `,
