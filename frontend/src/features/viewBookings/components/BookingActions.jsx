@@ -38,6 +38,7 @@ export default function BookingActions({
   onCancel,
   onConfirm,
   onComplete,
+  onReview,
 }) {
   if (userRole === "tutor") {
     if (booking.status === "pending") {
@@ -86,6 +87,17 @@ export default function BookingActions({
   }
 
   if (userRole === "student") {
+    if (booking.status === "completed" && !booking.has_reviewed) {
+      return (
+        <Button
+          variant="outlined"
+          onClick={() => onReview(booking)}
+          sx={actionButtonStyles.blue}
+        >
+          Leave Review
+        </Button>
+      );
+    }
     if (booking.status === "pending" || booking.status === "confirmed") {
       return (
         <Button
