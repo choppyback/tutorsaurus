@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Stack, CircularProgress } from "@mui/material";
-import axios from "axios";
-import BASE_URL from "../../../config/api";
 import NavBar from "../../../shared/components/NavBar";
 import StatusFilter from "../components/StatusFilter";
 import BookingCard from "../components/BookingCard";
@@ -10,6 +8,9 @@ import ReviewDialog from "../../reviewsRatings/components/ReviewDialog";
 // HOOKS
 import { useCancelBooking } from "../hooks/useCancelBooking";
 import { useLeaveReview } from "../../reviewsRatings/hooks/useLeaveReview";
+
+// API
+import { fetchBookings } from "../api/fetchBooking";
 
 // STYLES
 import styles from "./StudentBookingView";
@@ -32,19 +33,6 @@ export default function StudentBookingView() {
 
   // EVENT HANDLERS
   // ==========================
-  async function fetchBookings() {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/bookings/student/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setBookings(res.data);
-    } catch (err) {
-      console.error("Failed to fetch bookings", err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   function handleOpenReviewDialog(booking) {
     setSelectedBooking(booking);
     setDialogOpen(true);
@@ -53,7 +41,18 @@ export default function StudentBookingView() {
   // EFFECTS
   // ==========================
   useEffect(() => {
-    fetchBookings();
+    const loadBookings = async () => {
+      try {
+        const data = await fetchBookings("student", token);
+        setBookings(data);
+      } catch (err) {
+        console.error("Failed to fetch bookings", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBookings();
   }, []);
 
   // COMPUTED
@@ -91,14 +90,16 @@ export default function StudentBookingView() {
               ))}
             </Stack>
           )}
-
-          <ReviewDialog
-            open={dialogOpen}
-            booking={selectedBooking}
-            onClose={() => setDialogOpen(false)}
-            onSubmit={leaveReview}
-            readOnly={false}
-          />
+          {dialogOpen && selectedBooking && (
+            <ReviewDialog
+              open={dialogOpen}
+              nameToDisplay={selectedBooking.tutor_name}
+              booking={selectedBooking}
+              onClose={() => setDialogOpen(false)}
+              onSubmit={leaveReview}
+              readOnly={false}
+            />
+          )}
         </Box>
       </Box>
     </>
