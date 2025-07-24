@@ -149,10 +149,23 @@ router.get("/:id", async (req, res) => {
       end_time: row.end_time,
     }));
 
+    const ratingRes = await pool.query(
+      `SELECT 
+         ROUND(AVG(score)::numeric, 1) AS rating, 
+         COUNT(*) AS review_count
+       FROM ratings
+       WHERE tutor_id = $1`,
+      [user_id]
+    );
+
+    const { rating, review_count } = ratingRes.rows[0];
+
     user.bio = tutorRes.rows[0]?.bio || "";
     user.modules_taught = modules;
     user.hourly_rate = hourly_rate;
     user.availability = availability;
+    user.rating = rating;
+    user.review_count = review_count;
 
     res.json(user);
   } catch (err) {
@@ -162,133 +175,138 @@ router.get("/:id", async (req, res) => {
 });
 
 // PUT
-router.put("/", authenticate, upload.single("profile_pic"), async (req, res) => {
-  try {
-    const user_id = req.user;
-    const {
-      name,
-      faculty,
-      year_of_study,
-      gender,
-      email,
-      bio,
-      modules_taught,
-      hourly_rate,
-    } = req.body;
-
-    let availability = {};
+router.put(
+  "/",
+  authenticate,
+  upload.single("profile_pic"),
+  async (req, res) => {
     try {
-      availability = JSON.parse(req.body.availability || "{}");
-    } catch (e) {
-      console.error("Invalid availability JSON");
-      return res.status(400).json({ message: "Invalid availability format" });
-    }
+      const user_id = req.user;
+      const {
+        name,
+        faculty,
+        year_of_study,
+        gender,
+        email,
+        bio,
+        modules_taught,
+        hourly_rate,
+      } = req.body;
 
-    const emailCheck = await pool.query(
-      "SELECT * FROM users WHERE email = $1 AND user_id != $2",
-      [email, user_id]
-    );
-    if (emailCheck.rows.length > 0) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
+      let availability = {};
+      try {
+        availability = JSON.parse(req.body.availability || "{}");
+      } catch (e) {
+        console.error("Invalid availability JSON");
+        return res.status(400).json({ message: "Invalid availability format" });
+      }
 
-    // USERS table update
-    let userQuery = `
+      const emailCheck = await pool.query(
+        "SELECT * FROM users WHERE email = $1 AND user_id != $2",
+        [email, user_id]
+      );
+      if (emailCheck.rows.length > 0) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+
+      // USERS table update
+      let userQuery = `
       UPDATE users
       SET name = $1, faculty = $2, year_of_study = $3, gender = $4, email = $5`;
-    const userValues = [name, faculty, year_of_study, gender, email];
+      const userValues = [name, faculty, year_of_study, gender, email];
 
-    if (req.file) {
-      userQuery += `, profile_pic = $6 WHERE user_id = $7`;
-      userValues.push(`/uploads/${req.file.filename}`, user_id);
-    } else {
-      userQuery += ` WHERE user_id = $6`;
-      userValues.push(user_id);
-    }
+      if (req.file) {
+        userQuery += `, profile_pic = $6 WHERE user_id = $7`;
+        userValues.push(`/uploads/${req.file.filename}`, user_id);
+      } else {
+        userQuery += ` WHERE user_id = $6`;
+        userValues.push(user_id);
+      }
 
-    await pool.query(userQuery, userValues);
+      await pool.query(userQuery, userValues);
 
-    // TUTOR-specific update
-    const roleResult = await pool.query(
-      "SELECT role FROM users WHERE user_id = $1",
-      [user_id]
-    );
-    const userRole = roleResult.rows[0]?.role;
-
-    if (userRole === "tutor") {
-      const tutorExists = await pool.query(
-        "SELECT * FROM tutors WHERE user_id = $1",
+      // TUTOR-specific update
+      const roleResult = await pool.query(
+        "SELECT role FROM users WHERE user_id = $1",
         [user_id]
       );
+      const userRole = roleResult.rows[0]?.role;
 
-      if (tutorExists.rows.length === 0) {
-        await pool.query("INSERT INTO tutors (user_id, bio) VALUES ($1, $2)", [
-          user_id,
-          bio || "",
-        ]);
-      } else {
-        await pool.query("UPDATE tutors SET bio = $1 WHERE user_id = $2", [
-          bio || "",
-          user_id,
-        ]);
-      }
+      if (userRole === "tutor") {
+        const tutorExists = await pool.query(
+          "SELECT * FROM tutors WHERE user_id = $1",
+          [user_id]
+        );
 
-      // update availability table
-      await pool.query("DELETE FROM availability WHERE user_id = $1", [
-        user_id,
-      ]);
-
-      for (const slot of availability) {
-        const { day, start_time, end_time } = slot;
-
-        if (day && start_time && end_time) {
+        if (tutorExists.rows.length === 0) {
           await pool.query(
-            `INSERT INTO availability (user_id, day, start_time, end_time)
-       VALUES ($1, $2, $3, $4)`,
-            [user_id, day, start_time, end_time]
+            "INSERT INTO tutors (user_id, bio) VALUES ($1, $2)",
+            [user_id, bio || ""]
           );
+        } else {
+          await pool.query("UPDATE tutors SET bio = $1 WHERE user_id = $2", [
+            bio || "",
+            user_id,
+          ]);
         }
-      }
 
-      if (modules_taught !== undefined) {
-        // Clear and re-insert
-        await pool.query("DELETE FROM tutor_modules WHERE user_id = $1", [
+        // update availability table
+        await pool.query("DELETE FROM availability WHERE user_id = $1", [
           user_id,
         ]);
 
-        const moduleCodes = modules_taught
-          .split(",")
-          .map((code) => code.trim().toUpperCase())
-          .filter(Boolean);
+        for (const slot of availability) {
+          const { day, start_time, end_time } = slot;
 
-        for (const code of moduleCodes) {
-          let result = await pool.query(
-            "SELECT * FROM modules WHERE code = $1",
-            [code]
-          );
-
-          if (result.rows.length === 0) {
-            result = await pool.query(
-              "INSERT INTO modules (code) VALUES ($1) RETURNING module_id",
-              [code]
+          if (day && start_time && end_time) {
+            await pool.query(
+              `INSERT INTO availability (user_id, day, start_time, end_time)
+       VALUES ($1, $2, $3, $4)`,
+              [user_id, day, start_time, end_time]
             );
           }
+        }
 
-          const module_id = result.rows[0].module_id;
+        if (modules_taught !== undefined) {
+          // Clear and re-insert
+          await pool.query("DELETE FROM tutor_modules WHERE user_id = $1", [
+            user_id,
+          ]);
 
-          await pool.query(
-            "INSERT INTO tutor_modules (user_id, module_id, hourly_rate) VALUES ($1, $2, $3)",
-            [user_id, module_id, hourly_rate]
-          );
+          const moduleCodes = modules_taught
+            .split(",")
+            .map((code) => code.trim().toUpperCase())
+            .filter(Boolean);
+
+          for (const code of moduleCodes) {
+            let result = await pool.query(
+              "SELECT * FROM modules WHERE code = $1",
+              [code]
+            );
+
+            if (result.rows.length === 0) {
+              result = await pool.query(
+                "INSERT INTO modules (code) VALUES ($1) RETURNING module_id",
+                [code]
+              );
+            }
+
+            const module_id = result.rows[0].module_id;
+
+            await pool.query(
+              "INSERT INTO tutor_modules (user_id, module_id, hourly_rate) VALUES ($1, $2, $3)",
+              [user_id, module_id, hourly_rate]
+            );
+          }
         }
       }
-    }
 
-    res.json({ message: "Profile updated successfully" });
-  } catch (err) {
-    process.stdout.write("Update error:", err.message);
-    res.status(500).send("Server error");
+      res.json({ message: "Profile updated successfully" });
+    } catch (err) {
+      process.stdout.write("Update error:", err.message);
+      res.status(500).send("Server error");
+    }
   }
-});
+);
 
 module.exports = router;
