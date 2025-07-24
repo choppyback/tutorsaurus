@@ -62,10 +62,10 @@ function TutorProfile({ id, open, onClose }) {
               </Typography>
               <img src={starIcon} alt="star" width={14} height={14} />
               <Typography fontWeight="bold" fontSize="16px">
-                3.50
+                {tutor.rating ? tutor.rating : "N/A"}
               </Typography>
               <Typography color="text.secondary" sx={{ fontSize: "16px" }}>
-                (0)
+                ({tutor.review_count || 0})
               </Typography>
             </Box>
 
@@ -98,6 +98,19 @@ function TutorProfile({ id, open, onClose }) {
           <Typography variant="body2">
             {tutor.bio || "No bio available"}
           </Typography>
+        </Box>
+
+        {/* Reviews */}
+        <Box mt={4}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            Reviews
+          </Typography>
+          {/* <BookingInterface
+            tutor_id={id}
+            modules={tutor.modules_taught}
+            availability={tutor.availability}
+            hourly_rate={tutor.hourly_rate}
+          /> */}
         </Box>
 
         {/* Availability */}
