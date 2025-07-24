@@ -84,6 +84,18 @@ export default function BookingActions({
         </Stack>
       );
     }
+
+    if (booking.status === "completed" && booking.has_reviewed) {
+      return (
+        <Button
+          variant="outlined"
+          onClick={() => onReview(booking)}
+          sx={actionButtonStyles.blue}
+        >
+          View Review
+        </Button>
+      );
+    }
   }
 
   if (userRole === "student") {
