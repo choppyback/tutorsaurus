@@ -57,7 +57,7 @@ const Home = () => {
       const passPrice =
         !filters.maxPrice || tutor.hourly_rate <= parseFloat(filters.maxPrice);
       const passRating =
-        !filters.rating || tutor.rating >= parseFloat(filters.rating);
+        !filters.rating || (tutor.rating ?? 0) >= parseFloat(filters.rating);
 
       return passFaculty && passPrice && passRating;
     });
