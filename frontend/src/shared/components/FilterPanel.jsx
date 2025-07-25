@@ -1,6 +1,8 @@
 import React from "react";
 import {
   Box,
+  Typography,
+  Slider,
   TextField,
   Button,
   FormControl,
@@ -53,12 +55,31 @@ const FilterPanel = ({ filters, setFilters }) => {
         value={filters.maxPrice}
         onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
       />
-      <TextField
-        label="Rating"
-        type="number"
-        value={filters.rating}
-        onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
-      />
+      <Box>
+        <Typography
+          fontWeight="bold"
+          fontSize="14px"
+          sx={{ color: "#294A29", mb: 0.5, ml: 0.5 }}
+        >
+          Min Rating
+        </Typography>
+        <Slider
+          value={filters.rating || 1}
+          min={1}
+          max={5}
+          step={0.1}
+          onChange={(_, newValue) =>
+            setFilters({ ...filters, rating: newValue })
+          }
+          size="small"
+          valueLabelDisplay="auto"
+          sx={{
+            color: "#A2CB75", // your green theme
+            width: "95%", // make it shorter
+            ml: 1, // align with label
+          }}
+        />
+      </Box>
       <Button
         variant="outlined"
         onClick={handleClear}
