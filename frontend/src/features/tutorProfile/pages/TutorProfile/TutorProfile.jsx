@@ -4,6 +4,7 @@ import BASE_URL from "../../../../config/api";
 import { Modal, Box, Typography, Divider } from "@mui/material";
 import styles from "./TutorProfile";
 import BookingInterface from "../../../../shared/components/BookingInterface";
+import TutorReviews from "../../components/TutorReviews";
 import starIcon from "../../../../assets/images/star.svg";
 
 function TutorProfile({ id, open, onClose }) {
@@ -105,12 +106,7 @@ function TutorProfile({ id, open, onClose }) {
           <Typography variant="h5" fontWeight="bold" gutterBottom>
             Reviews
           </Typography>
-          {/* <BookingInterface
-            tutor_id={id}
-            modules={tutor.modules_taught}
-            availability={tutor.availability}
-            hourly_rate={tutor.hourly_rate}
-          /> */}
+          <TutorReviews reviews={tutor.reviews || []} />
         </Box>
 
         {/* Availability */}
