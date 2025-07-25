@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
         tm.hourly_rate, 
         t.bio,
         STRING_AGG(DISTINCT m_all.code, ', ') AS all_modules,
-        ROUND(AVG(r.score)::numeric, 1) AS rating,
-        COUNT(rv.review_id) AS review_count
+        ROUND(AVG(DISTINCT r.score)::numeric, 1) AS rating,
+        COUNT(DISTINCT rv.review_id) AS review_count
       FROM users u
       JOIN tutors t ON u.user_id = t.user_id
       JOIN tutor_modules tm ON t.user_id = tm.user_id
