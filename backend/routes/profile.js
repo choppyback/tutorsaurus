@@ -96,7 +96,7 @@ router.get("/:id", async (req, res) => {
   try {
     const user_id = req.params.id;
 
-    // 1. Get general user info, ensuring they are a tutor
+    // 1. Get general user info
     const userResult = await pool.query(
       "SELECT * FROM users WHERE user_id = $1 AND role = 'tutor'",
       [user_id]
@@ -108,7 +108,7 @@ router.get("/:id", async (req, res) => {
 
     const user = userResult.rows[0];
 
-    // 2. Get tutor-specific fields
+    // 2. Get tutor-specific info
     const tutorRes = await pool.query(
       "SELECT bio FROM tutors WHERE user_id = $1",
       [user_id]
@@ -125,7 +125,7 @@ router.get("/:id", async (req, res) => {
     const modules = moduleRes.rows.map((r) => r.code).join(", ");
     const hourly_rate = moduleRes.rows[0]?.hourly_rate || null;
 
-    // 3. Get availability from availability table
+    // 3. Get availability
     const availabilityRes = await pool.query(
       `SELECT day, start_time, end_time
        FROM availability
@@ -149,6 +149,7 @@ router.get("/:id", async (req, res) => {
       end_time: row.end_time,
     }));
 
+    // 4. Ratings
     const ratingRes = await pool.query(
       `SELECT 
          ROUND(AVG(score)::numeric, 1) AS rating, 
@@ -157,15 +158,33 @@ router.get("/:id", async (req, res) => {
        WHERE tutor_id = $1`,
       [user_id]
     );
-
     const { rating, review_count } = ratingRes.rows[0];
 
+    // 5. Reviews
+    const reviewsRes = await pool.query(
+      `SELECT 
+     reviews.review_id,
+     ratings.score,
+     reviews.review,
+     reviews.created_at,
+     users.name AS reviewer_name
+    FROM reviews
+    JOIN ratings ON reviews.booking_id = ratings.booking_id
+    JOIN users ON reviews.student_id = users.user_id
+    WHERE reviews.tutor_id = $1 AND ratings.tutor_id = $1
+    ORDER BY reviews.created_at DESC`,
+      [user_id]
+    );
+    const reviews = reviewsRes.rows;
+
+    // Compose final response
     user.bio = tutorRes.rows[0]?.bio || "";
     user.modules_taught = modules;
     user.hourly_rate = hourly_rate;
     user.availability = availability;
     user.rating = rating;
     user.review_count = review_count;
+    user.reviews = reviews;
 
     res.json(user);
   } catch (err) {
