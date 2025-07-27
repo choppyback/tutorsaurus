@@ -13,26 +13,25 @@ import { useConfirmBooking } from "../hooks/useConfirmBooking";
 import { useCompletedBooking } from "../hooks/useCompletedBooking";
 import { useViewReview } from "../../reviewsRatings/hooks/useViewReview";
 
-// API
-import { fetchBookings } from "../api/fetchBooking";
-
 // STYLES
 import styles from "./TutorBookingView";
 
 export default function TutorBookingView() {
-  useEffect(() => {
-    const loadBookings = async () => {
-      try {
-        const data = await fetchBookings("tutor", token);
-        setBookings(data);
-      } catch (err) {
-        console.error("Failed to fetch bookings", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchBookings = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/bookings/tutor/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBookings(res.data);
+    } catch (err) {
+      console.error("Failed to fetch bookings", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadBookings();
+  useEffect(() => {
+    fetchBookings();
   }, []);
 
   const token = localStorage.getItem("token");
