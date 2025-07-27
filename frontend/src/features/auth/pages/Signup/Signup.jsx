@@ -112,7 +112,7 @@ const Signup = () => {
       const res = await axios.post(`${BASE_URL}/auth/signup`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Signup successful. Token: " + res.data.jwtToken);
+      // alert("Signup successful. Token: " + res.data.jwtToken);
       localStorage.setItem("token", res.data.jwtToken);
       navigate("/home");
     } catch (err) {
