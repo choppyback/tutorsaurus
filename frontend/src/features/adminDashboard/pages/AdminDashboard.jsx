@@ -256,15 +256,19 @@ const AdminDashboard = () => {
                     <MenuItem value="admin">Admin</MenuItem>
                   </Select>
                 </FormControl>
-                <TextField
-                  margin="dense"
-                  name="gender"
-                  label="Gender"
-                  type="text"
-                  fullWidth
-                  value={formData.gender}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth>
+                  <InputLabel>Gender</InputLabel>
+                  <Select
+                    label="Gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                  >
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                  </Select>
+                </FormControl>
                 <FormControl fullWidth>
                   <InputLabel>Year of Study</InputLabel>
                   <Select
