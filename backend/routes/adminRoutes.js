@@ -1,4 +1,4 @@
- const express = require("express");
+const express = require("express");
 const router = express.Router();
 const {
   getAllUsers,
@@ -8,11 +8,11 @@ const {
   createUser,
 } = require("../controllers/adminController");
 
-const { authenticate } = require("../middleware/authenticate");
-const { authorizeRole } = require("../middleware/authorizeRole");
+const authenticate = require("../middleware/authenticate");
+const authorizeRole = require("../middleware/authorizeRole");
 
 // Admin routes - require admin role
-router.use(authenticate, authorizeRole("admin"));
+router.use(authenticate, authorizeRole);
 
 router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
