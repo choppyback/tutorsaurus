@@ -140,12 +140,18 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId, userName) => {
     try {
+      const confirmDelete = window.confirm(
+        `Are you sure you want to delete ${userName}?`
+      );
+      if (!confirmDelete) return;
+
       const token = localStorage.getItem("token");
       await axios.delete(`${serverBaseURL}/api/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       //filter out the deleted id
       setUsers(users.filter((user) => user.user_id !== userId));
     } catch (err) {
@@ -193,7 +199,7 @@ const AdminDashboard = () => {
                   <TableCell>
                     <Button onClick={() => handleOpen(user)}>Edit</Button>
                     <Button
-                      onClick={() => handleDelete(user.user_id)}
+                      onClick={() => handleDelete(user.user_id, user.name)}
                       color="error"
                     >
                       Delete
