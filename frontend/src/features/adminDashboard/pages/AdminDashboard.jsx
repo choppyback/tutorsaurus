@@ -211,7 +211,7 @@ const AdminDashboard = () => {
           </DialogTitle>
           <DialogContent>
             <form onSubmit={handleSubmit}>
-              <Stack spacing={2} sx={{ width: "550px" }}>
+              <Stack spacing={2} sx={{ pt: "5px", width: "550px" }}>
                 <TextField
                   margin="dense"
                   name="name"
