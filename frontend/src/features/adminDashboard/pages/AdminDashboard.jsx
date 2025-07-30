@@ -1,13 +1,7 @@
-// src/components/AdminDashboard.js
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import serverBaseURL from "../../../config/api";
-import NavBar from "../../../shared/components/NavBar";
-import styles from "./AdminDashboard.js";
-import { getRoleFromToken } from "../../../shared/utils/getRoleFromToken";
 import {
-  Stack,
+  Button,
   Box,
   Table,
   TableBody,
@@ -16,34 +10,17 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
-
-const faculties = [
-  "Arts and Social Sciences",
-  "Business",
-  "Computing",
-  "Dentistry",
-  "Design and Engineering",
-  "Law",
-  "Medicine",
-  "Science",
-  "Music",
-  "Public Health",
-  "Public Policy",
-];
+import NavBar from "../../../shared/components/NavBar";
+import styles from "./AdminDashboard.js";
+import { getRoleFromToken } from "../../../shared/utils/getRoleFromToken";
+import { useUserManagement } from "../hooks/useUserManagement.js";
+import UserFormDialog from "../components/UserFormDialog";
 
 const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
+  const { users, create, update, remove } = useUserManagement(navigate);
+
   const [open, setOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -55,25 +32,20 @@ const AdminDashboard = () => {
     year_of_study: "",
     faculty: "",
   });
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${serverBaseURL}/api/admin/users`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsers(response.data);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-        if (err.response?.status === 403) {
-          navigate("/");
-        }
-      }
-    };
-    fetchUsers();
-  }, [navigate]);
+  const faculties = [
+    "Arts and Social Sciences",
+    "Business",
+    "Computing",
+    "Dentistry",
+    "Design and Engineering",
+    "Law",
+    "Medicine",
+    "Science",
+    "Music",
+    "Public Health",
+    "Public Policy",
+  ];
 
   const handleOpen = (user = null) => {
     if (user) {
@@ -102,61 +74,23 @@ const AdminDashboard = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      if (currentUser) {
-        // Update existing user
-        await axios.put(
-          `${serverBaseURL}/api/admin/users/${currentUser}`,
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-      } else {
-        // Create new user
-        await axios.post(`${serverBaseURL}/api/admin/users`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      // Refresh user list
-      const response = await axios.get(`${serverBaseURL}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(response.data);
-      handleClose();
-    } catch (err) {
-      console.error("Error saving user:", err);
-    }
+    currentUser ? await update(currentUser, formData) : await create(formData);
+    handleClose();
   };
 
   const handleDelete = async (userId, userName) => {
-    try {
-      const confirmDelete = window.confirm(
-        `Are you sure you want to delete ${userName}?`
-      );
-      if (!confirmDelete) return;
-
-      const token = localStorage.getItem("token");
-      await axios.delete(`${serverBaseURL}/api/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      //filter out the deleted id
-      setUsers(users.filter((user) => user.user_id !== userId));
-    } catch (err) {
-      console.error("Error deleting user:", err);
-    }
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${userName}?`
+    );
+    if (!confirmed) return;
+    await remove(userId);
   };
 
   return (
@@ -164,15 +98,10 @@ const AdminDashboard = () => {
       <NavBar role={getRoleFromToken()} />
       <Box sx={styles.page}>
         <h1>Admin Dashboard</h1>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpen()}
-        >
+        <Button variant="contained" onClick={() => handleOpen()}>
           Add New User
         </Button>
-
-        <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -210,119 +139,15 @@ const AdminDashboard = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>
-            {currentUser ? "Edit User" : "Add New User"}
-          </DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit}>
-              <Stack spacing={2} sx={{ pt: "5px", width: "550px" }}>
-                <TextField
-                  margin="dense"
-                  name="name"
-                  label="Name"
-                  type="text"
-                  fullWidth
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-                <TextField
-                  margin="dense"
-                  name="email"
-                  label="Email"
-                  type="email"
-                  fullWidth
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <TextField
-                  margin="dense"
-                  name="password"
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  value={formData.password}
-                  onChange={handleChange}
-                  required={!currentUser}
-                />
-                <FormControl fullWidth>
-                  <InputLabel>Role</InputLabel>
-                  <Select
-                    label="Role"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    required
-                  >
-                    <MenuItem value="student">Student</MenuItem>
-                    <MenuItem value="tutor">Tutor</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel>Gender</InputLabel>
-                  <Select
-                    label="Gender"
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    required
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel>Year of Study</InputLabel>
-                  <Select
-                    label="Year of Study"
-                    name="year_of_study"
-                    value={formData.year_of_study}
-                    onChange={handleChange}
-                    required
-                  >
-                    <MenuItem value="">
-                      <em>Select Year</em>
-                    </MenuItem>
-                    {[1, 2, 3, 4, 5].map((year) => (
-                      <MenuItem key={year} value={year}>
-                        Year {year}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel>Faculty</InputLabel>
-                  <Select
-                    label="Faculty"
-                    name="faculty"
-                    value={formData.faculty}
-                    onChange={handleChange}
-                    required
-                  >
-                    <MenuItem value="">
-                      <em>Select Faculty</em>
-                    </MenuItem>
-                    {faculties.map((f, idx) => (
-                      <MenuItem key={idx} value={f}>
-                        {f}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Stack>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit} color="primary">
-              {currentUser ? "Update" : "Create"}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <UserFormDialog
+          open={open}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+          formData={formData}
+          handleChange={handleChange}
+          currentUser={currentUser}
+          faculties={faculties}
+        />
       </Box>
     </>
   );
