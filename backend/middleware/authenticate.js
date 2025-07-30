@@ -14,6 +14,7 @@ module.exports = async (req, res, next) => {
     const payload = jwt.verify(token, process.env.jwtSecret);
 
     req.user = payload.user; // this is a user_id
+    req.role = payload.role;
     //console.log("User authenticated")
     next();
   } catch (err) {
