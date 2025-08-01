@@ -39,8 +39,6 @@ const syncModules = async () => {
     console.log("Module codes and titles synced successfully!");
   } catch (err) {
     console.error("Error syncing modules:", err.message);
-  } finally {
-    pool.end();
   }
 };
 
