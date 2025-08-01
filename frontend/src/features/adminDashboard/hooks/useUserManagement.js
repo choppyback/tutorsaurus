@@ -4,6 +4,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  syncModules,
 } from "../api/userManagementAPI";
 
 export const useUserManagement = (navigate) => {
@@ -34,9 +35,13 @@ export const useUserManagement = (navigate) => {
     setUsers((prev) => prev.filter((u) => u.user_id !== userId));
   };
 
+  const sync = async () => {
+    await syncModules(token);
+  };
+
   useEffect(() => {
     getUsers();
   }, []);
 
-  return { users, create, update, remove };
+  return { users, create, update, remove, sync };
 };
