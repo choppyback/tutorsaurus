@@ -24,3 +24,16 @@ export const deleteUser = async (token, userId) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+export const syncModules = async (token) => {
+  const res = await axios.post(
+    `${serverBaseURL}/api/admin/sync-modules`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res.data;
+};
