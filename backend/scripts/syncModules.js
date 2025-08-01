@@ -44,4 +44,4 @@ const syncModules = async () => {
   }
 };
 
-syncModules();
+module.exports = syncModules;
