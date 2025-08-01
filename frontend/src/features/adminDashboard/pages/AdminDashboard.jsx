@@ -15,11 +15,13 @@ import NavBar from "../../../shared/components/NavBar";
 import styles from "./AdminDashboard.js";
 import { getRoleFromToken } from "../../../shared/utils/getRoleFromToken";
 import { useUserManagement } from "../hooks/useUserManagement.js";
+import PillFilter from "../../../shared/components/PillFilter.jsx";
 import UserFormDialog from "../components/UserFormDialog";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { users, create, update, remove } = useUserManagement(navigate);
+  const [activeRoleFilter, setActiveRoleFilter] = useState("all");
 
   const [open, setOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -45,6 +47,13 @@ const AdminDashboard = () => {
     "Music",
     "Public Health",
     "Public Policy",
+  ];
+
+  const USER_FILTERS = [
+    { label: "All users", value: "all" },
+    { label: "Admins", value: "admin" },
+    { label: "Tutors", value: "tutor" },
+    { label: "Students", value: "student" },
   ];
 
   const handleOpen = (user = null) => {
@@ -93,11 +102,20 @@ const AdminDashboard = () => {
     await remove(userId);
   };
 
+  const filteredUsers = users.filter((user) =>
+    activeRoleFilter === "all" ? true : user.role === activeRoleFilter
+  );
+
   return (
     <>
       <NavBar role={getRoleFromToken()} />
       <Box sx={styles.page}>
         <h1>Admin Dashboard</h1>
+        <PillFilter
+          options={USER_FILTERS}
+          active={activeRoleFilter}
+          onChange={setActiveRoleFilter}
+        />
         <Button variant="contained" onClick={() => handleOpen()}>
           Add New User
         </Button>
@@ -116,7 +134,7 @@ const AdminDashboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.user_id}>
                   <TableCell>{user.user_id}</TableCell>
                   <TableCell>{user.name}</TableCell>
