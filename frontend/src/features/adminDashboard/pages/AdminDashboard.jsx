@@ -20,7 +20,7 @@ import UserFormDialog from "../components/UserFormDialog";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { users, create, update, remove } = useUserManagement(navigate);
+  const { users, create, update, remove, sync } = useUserManagement(navigate);
   const [activeRoleFilter, setActiveRoleFilter] = useState("all");
 
   const [open, setOpen] = useState(false);
@@ -55,6 +55,16 @@ const AdminDashboard = () => {
     { label: "Tutors", value: "tutor" },
     { label: "Students", value: "student" },
   ];
+
+  const handleSyncModules = async () => {
+    try {
+      await sync();
+      alert("Module list synced successfully.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to sync module list.");
+    }
+  };
 
   const handleOpen = (user = null) => {
     if (user) {
@@ -118,6 +128,9 @@ const AdminDashboard = () => {
         />
         <Button variant="contained" onClick={() => handleOpen()}>
           Add New User
+        </Button>
+        <Button variant="outlined" onClick={handleSyncModules} sx={{ ml: 2 }}>
+          Sync Module List
         </Button>
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
