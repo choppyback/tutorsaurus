@@ -15,6 +15,7 @@ const tutorBookingsController = async (req, res) => {
         b.start_time,
         b.end_time,
         b.status,
+        b.student_id, 
         s.name AS student_name,
         t.name AS tutor_name,
         EXISTS (
