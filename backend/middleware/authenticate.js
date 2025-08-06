@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    const payload = jwt.verify(token, process.env.jwtSecret);
+    const payload = jwt.verify(token, process.env.jwtSecret); // has error log "invalid token"
 
     req.user = payload.user; // this is a user_id
     req.role = payload.role;
