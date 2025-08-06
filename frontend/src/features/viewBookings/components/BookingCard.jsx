@@ -34,13 +34,8 @@ export default function BookingCard({
       }}
     >
       {/* CHAT ICON */}
-
       <IconButton
-        onClick={() =>
-          onMessage(
-            userRole === "tutor" ? booking.student_id : booking.tutor_id
-          )
-        }
+        onClick={() => onMessage(booking)}
         sx={{
           position: "absolute",
           top: 12,

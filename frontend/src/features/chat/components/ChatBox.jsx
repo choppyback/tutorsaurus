@@ -1,20 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useSocket from "../hooks/useSocket";
+import BASE_URL from "../../../config/api";
 import {
   Modal,
   Box,
   Typography,
-  Divider,
   TextField,
-  Button,
   IconButton,
+  Avatar,
+  InputAdornment,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close as CloseIcon, Send as SendIcon } from "@mui/icons-material";
 
-export default function ChatBox({ open, onClose, conversationId }) {
+export default function ChatBox({
+  open,
+  onClose,
+  userId,
+  conversationId,
+  name,
+  profile_pic,
+}) {
   const socket = useSocket();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (!socket || !conversationId) return;
@@ -54,52 +67,74 @@ export default function ChatBox({ open, onClose, conversationId }) {
     }
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={styles.modalBox}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight="bold">
-            Chat
-          </Typography>
+        <Box sx={styles.header}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <Avatar
+              src={BASE_URL + profile_pic}
+              sx={{ width: 50, height: 50 }}
+            />
+            <Typography fontWeight="bold">{name}</Typography>
+          </Box>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </Box>
 
-        <Divider sx={{ my: 2 }} />
-
         {/* Message History */}
         <Box sx={styles.messageContainer}>
-          {messages.map((msg, i) => (
-            <Box key={i} mb={1}>
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                sx={{ display: "inline", mr: 1 }}
+          {messages.map((msg, i) => {
+            const isMine = msg.sender_id === userId;
+
+            return (
+              <Box
+                key={i}
+                sx={{
+                  ...styles.bubble,
+                  alignSelf: isMine ? "flex-end" : "flex-start",
+                  bgcolor: isMine ? "#e3f2fd" : "#f1f1f1",
+                }}
               >
-                {msg.sender_name || msg.sender_id}:
-              </Typography>
-              <Typography variant="body2" component="span">
-                {msg.message}
-              </Typography>
-            </Box>
-          ))}
+                <Typography variant="body2">{msg.message}</Typography>
+              </Box>
+            );
+          })}
+          <div ref={messagesEndRef} />
         </Box>
 
-        {/* Input Field */}
-        <Box mt={2} display="flex" gap={1}>
+        {/* Message Input */}
+        <Box sx={styles.inputBox}>
           <TextField
             fullWidth
             size="small"
             variant="outlined"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+            placeholder="Type your message here..."
+            InputProps={{
+              sx: { borderRadius: 20, pl: 2 },
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={sendMessage}>
+                    <SendIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button variant="contained" onClick={sendMessage}>
-            Send
-          </Button>
         </Box>
       </Box>
     </Modal>
@@ -112,20 +147,39 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "40%",
-    maxHeight: "80vh",
-    overflowY: "auto",
-    bgcolor: "rgb(248, 252, 247)",
-    borderRadius: 2,
+    width: 500,
+    height: 500,
+    bgcolor: "#ffffff",
+    borderRadius: 3,
     boxShadow: 24,
-    p: 4,
+    p: 2,
+    display: "flex",
+    flexDirection: "column",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    pb: 2,
+    borderBottom: "1px solid #e0e0e0",
   },
   messageContainer: {
-    maxHeight: 300,
+    flex: 1,
     overflowY: "auto",
-    border: "1px solid #ccc",
-    borderRadius: 1,
-    padding: 2,
-    backgroundColor: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    py: 2,
+    px: 1,
+  },
+  bubble: {
+    maxWidth: "75%",
+    p: 1,
+    px: 2,
+    borderRadius: 2,
+    fontSize: "14px",
+  },
+  inputBox: {
+    mt: 1,
   },
 };

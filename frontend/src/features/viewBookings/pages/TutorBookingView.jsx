@@ -52,16 +52,21 @@ export default function TutorBookingView() {
     }
   }
 
-  async function handleChatToggle(studentId) {
+  async function handleChatToggle(booking) {
     try {
       const res = await axios.post(
         `${BASE_URL}/api/chat/start`,
-        { studentId },
+        { studentId: booking.student_id },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setOpenChat({ studentId, conversationId: res.data.conversation_id });
+      setOpenChat({
+        userId: booking.tutor_id,
+        conversationId: res.data.conversation_id,
+        name: booking.student_name,
+        profile_pic: booking.student_profile_pic,
+      });
     } catch (err) {
       console.error("Failed to create conversation:", err);
     }
@@ -141,7 +146,10 @@ export default function TutorBookingView() {
             <ChatBox
               open
               onClose={() => setOpenChat(null)}
+              userId={openChat.userId}
               conversationId={openChat.conversationId}
+              name={openChat.name}
+              profile_pic={openChat.profile_pic}
             />
           )}
         </Box>

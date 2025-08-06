@@ -15,8 +15,10 @@ const studentBookingsController = async (req, res) => {
         b.start_time,
         b.end_time,
         b.status,
+        b.student_id, 
         t.user_id AS tutor_id,
         t.name AS tutor_name,
+        t.profile_pic AS tutor_profile_pic,
         EXISTS (
           SELECT 1 FROM reviews r
           WHERE r.booking_id = b.booking_id

@@ -53,16 +53,21 @@ export default function StudentBookingView() {
     setDialogOpen(true);
   }
 
-  async function handleChatToggle(tutorId) {
+  async function handleChatToggle(booking) {
     try {
       const res = await axios.post(
         `${BASE_URL}/api/chat/start`,
-        { tutorId },
+        { tutorId: booking.tutor_id },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setOpenChat({ tutorId, conversationId: res.data.conversation_id });
+      setOpenChat({
+        userId: booking.student_id,
+        conversationId: res.data.conversation_id,
+        name: booking.tutor_name,
+        profile_pic: booking.tutor_profile_pic,
+      });
     } catch (err) {
       console.error("Failed to create conversation:", err);
     }
@@ -128,7 +133,10 @@ export default function StudentBookingView() {
             <ChatBox
               open
               onClose={() => setOpenChat(null)}
+              userId={openChat.userId}
               conversationId={openChat.conversationId}
+              name={openChat.name}
+              profile_pic={openChat.profile_pic}
             />
           )}
         </Box>
