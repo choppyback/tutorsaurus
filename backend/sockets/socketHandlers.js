@@ -11,7 +11,9 @@ module.exports = (io, socket) => {
 
   socket.on("sendMessage", async ({ conversationId, message }) => {
     const senderId = socket.user_id;
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toLocaleString("en-SG", {
+      hour12: false,
+    });
 
     try {
       await pool.query(
