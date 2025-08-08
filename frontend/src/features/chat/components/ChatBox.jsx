@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import useSocket from "../hooks/useSocket";
 import BASE_URL from "../../../config/api";
+import dayjs from "dayjs";
+
 import {
   Modal,
   Box,
@@ -27,6 +29,38 @@ export default function ChatBox({
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const groupMessagesByDate = (messages) => {
+    const groups = {};
+
+    messages.forEach((msg) => {
+      const date = dayjs(msg.timestamp).format("YYYY-MM-DD"); // normalize to same format
+      if (!groups[date]) groups[date] = []; // create array if date does not exist
+      groups[date].push(msg); // append if date exist
+    });
+
+    return groups;
+  };
+
+  const formatDateLabel = (date) => {
+    const day = dayjs(date);
+    const today = dayjs();
+    const yesterday = dayjs().subtract(1, "day");
+
+    if (day.isSame(today, "day")) return "Today"; // compare day part, ignore time
+    if (day.isSame(yesterday, "day")) return "Yesterday";
+    return day.format("DD MMM YYYY");
+  };
+
+  const sendMessage = () => {
+    if (newMessage.trim() && socket) {
+      socket.emit("sendMessage", {
+        conversationId,
+        message: newMessage,
+      });
+      setNewMessage("");
+    }
   };
 
   useEffect(() => {
@@ -57,16 +91,6 @@ export default function ChatBox({
     }
   }, [conversationId]);
 
-  const sendMessage = () => {
-    if (newMessage.trim() && socket) {
-      socket.emit("sendMessage", {
-        conversationId,
-        message: newMessage,
-      });
-      setNewMessage("");
-    }
-  };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -90,22 +114,44 @@ export default function ChatBox({
 
         {/* Message History */}
         <Box sx={styles.messageContainer}>
-          {messages.map((msg, i) => {
-            const isMine = msg.sender_id === userId;
-
-            return (
+          {Object.entries(groupMessagesByDate(messages)).map(([date, msgs]) => (
+            <React.Fragment key={date}>
+              {/* Date separator */}
               <Box
-                key={i}
                 sx={{
-                  ...styles.bubble,
-                  alignSelf: isMine ? "flex-end" : "flex-start",
-                  bgcolor: isMine ? "#e3f2fd" : "#f1f1f1",
+                  textAlign: "center",
+                  color: "#888",
+                  fontSize: "12px",
+                  my: 1,
                 }}
               >
-                <Typography variant="body2">{msg.message}</Typography>
+                {formatDateLabel(date)}
               </Box>
-            );
-          })}
+              {/* Messages for that date */}
+              {msgs.map((msg, i) => {
+                const isMine = msg.sender_id === userId;
+                return (
+                  <Box
+                    key={i}
+                    sx={{
+                      ...styles.bubble,
+                      alignSelf: isMine ? "flex-end" : "flex-start",
+                      bgcolor: isMine ? "#e3f2fd" : "#f1f1f1",
+                    }}
+                  >
+                    <Typography variant="body2">{msg.message}</Typography>
+                    <Typography
+                      variant="caption"
+                      fontSize={10}
+                      color="text.secondary"
+                    >
+                      {dayjs(msg.timestamp).format("HH:mm")}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </React.Fragment>
+          ))}
           <div ref={messagesEndRef} />
         </Box>
 
