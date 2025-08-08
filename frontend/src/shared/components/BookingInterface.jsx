@@ -29,9 +29,12 @@ export default function BookingInterface({
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
   const [bookedSlots, setBookedSlots] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   // COMPUTED VALUES
   // ==========================
+  // Get token from localStorage
+  const token = localStorage.getItem("token");
 
   // Convert modules string to an array
   const moduleOptions = modules ? modules.split(",").map((m) => m.trim()) : [];
@@ -67,6 +70,13 @@ export default function BookingInterface({
     }
   }, [tutor_id, selectedDate]);
 
+  useEffect(() => {
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      setUserId(payload.user); // assuming payload has `user` as user ID
+    }
+  }, []);
+
   const toggleSlot = (slot) => {
     setSelectedSlots((prev) =>
       prev.includes(slot) ? prev.filter((s) => s !== slot) : [...prev, slot]
@@ -95,9 +105,6 @@ export default function BookingInterface({
     if (!confirmed) {
       return; // user clicked cancel
     }
-
-    // Get token from localStorage
-    const token = localStorage.getItem("token");
 
     // Send booking for each time slot
     try {
@@ -303,16 +310,22 @@ export default function BookingInterface({
         <Typography variant="h6">
           Total price: <strong>${totalPrice}</strong>
         </Typography>
-        <Button
-          variant="contained"
-          color="error"
-          size="large"
-          onClick={handleBooking}
-          disabled={selectedSlots.length === 0 || !selectedModule}
-          sx={{ borderRadius: 3, px: 4 }}
-        >
-          Book
-        </Button>
+        {userId === tutor_id ? (
+          <Typography color="error" fontWeight="bold">
+            You cannot book a session with yourself.
+          </Typography>
+        ) : (
+          <Button
+            variant="contained"
+            color="error"
+            size="large"
+            onClick={handleBooking}
+            disabled={selectedSlots.length === 0 || !selectedModule}
+            sx={{ borderRadius: 3, px: 4 }}
+          >
+            Book
+          </Button>
+        )}
       </Box>
     </Box>
   );
