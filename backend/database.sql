@@ -76,3 +76,22 @@ CREATE TABLE bookings (
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled', 'completed'))
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
+
+-- CONVERSATIONS TABLE
+CREATE TABLE conversations (
+  conversation_id SERIAL PRIMARY KEY,
+  student_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  tutor_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_id, tutor_id) -- prevent duplicate conversations
+);
+
+-- MESSAGE TABLE
+CREATE TABLE messages (
+  message_id SERIAL PRIMARY KEY,
+  conversation_id INTEGER REFERENCES conversations(conversation_id) ON DELETE CASCADE,
+  sender_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

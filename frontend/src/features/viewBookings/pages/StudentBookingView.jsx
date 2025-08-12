@@ -6,6 +6,7 @@ import NavBar from "../../../shared/components/NavBar";
 import StatusFilter from "../components/StatusFilter";
 import BookingCard from "../components/BookingCard";
 import ReviewDialog from "../../reviewsRatings/components/ReviewDialog";
+import ChatBox from "../../chat/components/ChatBox";
 
 // HOOKS
 import { useCancelBooking } from "../hooks/useCancelBooking";
@@ -25,10 +26,12 @@ export default function StudentBookingView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
+  const [openChat, setOpenChat] = useState(null); // { tutorId, conversationId }
+
   // HOOKS
   // ==========================
   const handleCancel = useCancelBooking(token, fetchBookings);
-  const { leaveReview } = useLeaveReview(token, fetchBookings); // renamed to match naming style
+  const { leaveReview } = useLeaveReview(token, fetchBookings);
 
   // EVENT HANDLERS
   // ==========================
@@ -48,6 +51,26 @@ export default function StudentBookingView() {
   function handleOpenReviewDialog(booking) {
     setSelectedBooking(booking);
     setDialogOpen(true);
+  }
+
+  async function handleChatToggle(booking) {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/api/chat/start`,
+        { tutorId: booking.tutor_id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setOpenChat({
+        userId: booking.student_id,
+        conversationId: res.data.conversation_id,
+        name: booking.tutor_name,
+        profile_pic: booking.tutor_profile_pic,
+      });
+    } catch (err) {
+      console.error("Failed to create conversation:", err);
+    }
   }
 
   // EFFECTS
@@ -87,10 +110,13 @@ export default function StudentBookingView() {
                   userRole="student"
                   onCancel={handleCancel}
                   onReview={handleOpenReviewDialog}
+                  onMessage={handleChatToggle}
                 />
               ))}
             </Stack>
           )}
+
+          {/* REVIEW DIALOG */}
           {dialogOpen && selectedBooking && (
             <ReviewDialog
               open={dialogOpen}
@@ -99,6 +125,18 @@ export default function StudentBookingView() {
               onClose={() => setDialogOpen(false)}
               onSubmit={leaveReview}
               readOnly={false}
+            />
+          )}
+
+          {/* CHATBOX */}
+          {openChat && (
+            <ChatBox
+              open
+              onClose={() => setOpenChat(null)}
+              userId={openChat.userId}
+              conversationId={openChat.conversationId}
+              name={openChat.name}
+              profile_pic={openChat.profile_pic}
             />
           )}
         </Box>

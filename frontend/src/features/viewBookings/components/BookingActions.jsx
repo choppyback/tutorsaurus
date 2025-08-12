@@ -1,5 +1,3 @@
-// viewBookings/components/BookingActions.jsx
-
 import { Button, Stack, Typography } from "@mui/material";
 
 const actionButtonStyles = {
@@ -87,13 +85,15 @@ export default function BookingActions({
 
     if (booking.status === "completed" && booking.has_reviewed) {
       return (
-        <Button
-          variant="outlined"
-          onClick={() => onReview(booking)}
-          sx={actionButtonStyles.blue}
-        >
-          View Review
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            onClick={() => onReview(booking)}
+            sx={actionButtonStyles.blue}
+          >
+            View Review
+          </Button>
+        </Stack>
       );
     }
   }
@@ -101,25 +101,29 @@ export default function BookingActions({
   if (userRole === "student") {
     if (booking.status === "completed" && !booking.has_reviewed) {
       return (
-        <Button
-          variant="outlined"
-          onClick={() => onReview(booking)}
-          sx={actionButtonStyles.blue}
-        >
-          Leave Review
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            onClick={() => onReview(booking)}
+            sx={actionButtonStyles.blue}
+          >
+            Leave Review
+          </Button>
+        </Stack>
       );
     }
     if (booking.status === "pending" || booking.status === "confirmed") {
       return (
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => onCancel(booking.booking_id)}
-          sx={actionButtonStyles.red}
-        >
-          Cancel
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => onCancel(booking.booking_id)}
+            sx={actionButtonStyles.red}
+          >
+            Cancel
+          </Button>
+        </Stack>
       );
     }
   }

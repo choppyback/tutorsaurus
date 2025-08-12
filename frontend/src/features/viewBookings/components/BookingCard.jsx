@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
+import ChatIcon from "@mui/icons-material/Chat";
 import { formatDate } from "../../../shared/utils/formatDate";
 import BookingActions from "./BookingActions";
 
@@ -9,6 +10,7 @@ export default function BookingCard({
   onConfirm,
   onComplete,
   onReview,
+  onMessage,
 }) {
   const statusColor =
     booking.status === "confirmed" || booking.status === "completed"
@@ -21,6 +23,7 @@ export default function BookingCard({
     <Box
       key={booking.booking_id}
       sx={{
+        position: "relative",
         display: "flex",
         gap: 3,
         alignItems: "center",
@@ -30,6 +33,19 @@ export default function BookingCard({
         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
       }}
     >
+      {/* CHAT ICON */}
+      <IconButton
+        onClick={() => onMessage(booking)}
+        sx={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          color: "#4caf50",
+        }}
+      >
+        <ChatIcon />
+      </IconButton>
+
       <Box display="flex" justifyContent="space-between" flex={1}>
         {/* Booking details */}
         <Box display="flex" flexDirection="column" gap={1}>

@@ -1,5 +1,6 @@
 const pool = require("../db");
 const bcrypt = require("bcrypt");
+const syncModules = require("../scripts/syncModules");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -97,10 +98,21 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const SyncModules = async (req, res) => {
+  try {
+    await syncModules();
+    res.status(200).json({ message: "Module list synced successfully." });
+  } catch (err) {
+    console.error("Error syncing modules:", err.message);
+    res.status(500).json({ error: "Failed to sync module list." });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
+  SyncModules,
 };

@@ -1,10 +1,8 @@
-const authorizeRole = (role) => {
-  return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).json({ message: 'Forbidden - Insufficient permissions' });
-    }
-    next();
-  };
+const authorizeAdmin = (req, res, next) => {
+  if (!req.user || req.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden - Admins only" });
+  }
+  next();
 };
 
-module.exports = { authorizeRole };
+module.exports = authorizeAdmin;
